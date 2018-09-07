@@ -1,23 +1,29 @@
+import React, { Component } from 'react';
 
+import RazonesPresupuesto from './RazonesPresupuesto';
+import SolicitaPresupuesto from './SolicitaPresupuesto';
+import GarantiaHabitissimo from './GarantiaHabitissimo';
+
+// No need for a class here
 const Presupuesto = (props) => {
 	return (
 		<div id="form-wrapper">
-			<div class="container-fluid gray-container ql-wrapper">
-				<div class="container">
-					<div class="ql-header ql-header-es">
-						<h1 class="side_label t-lg text-bold">
+			<div className="container-fluid gray-container ql-wrapper">
+				<div className="container">
+					<div className="ql-header ql-header-es">
+						<h1 className="side_label t-lg ">
 							Pide presupuestos          
 						</h1>
-						<div id="ql-tagline" class="t-sm text-semibold">
+						<div id="ql-tagline" className="t-sm text-semibold">
 							Construcciones y reformas, instalaciones, limpieza, mudanzas, arquitectos y más…
 						</div>
 					</div>
-					<!-- .header -->
+					{/* <!-- .header --> */}
 				</div>
 			</div>
-			<div class="container-fluid gray-container">
-				<div class="container">
-					<div class="row form-area">
+			<div className="container-fluid gray-container">
+				<div className="container">
+					<div className="row form-area">
 						<RazonesPresupuesto />
 						<SolicitaPresupuesto />
 					</div>
@@ -27,3 +33,5 @@ const Presupuesto = (props) => {
 		</div>
 	);
 }
+
+export default Presupuesto;

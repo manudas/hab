@@ -1,8 +1,12 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Presupuesto from './components/Presupuesto';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import './habitissimo.css';
+
+ReactDOM.render(<Presupuesto />, document.getElementById('root'));
 registerServiceWorker();
