@@ -139,3 +139,81 @@ body {
     -o-transition: width .5s linear;
     transition: width .5s linear;
 }
+
+
+.btn-primary, body.landing-old #ql-form-container form button {
+    background-color: #ff7300;
+    border-color: #ff7300;
+    border-bottom: 2px solid #de6501;
+}
+
+.btn-group-lg>.btn, .btn-lg, body.landing-old #ql-form-container form button {
+    padding: 14px 46px;
+    font-size: 21px;
+    line-height: 1;
+    border-radius: 3px;
+}
+.btn, body.landing-old #ql-form-container form button {
+    padding: 12px 46px;
+    font-size: 16px;
+    line-height: 1;
+    border-radius: 3px;
+    white-space: normal;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #cc5c00;
+    border-color: #c25700
+}
+
+.btn-primary.focus,.btn-primary:focus {
+    color: #fff;
+    background-color: #cc5c00!important;
+    border-color: #803900!important
+}
+
+.btn-primary.active,.btn-primary.focus,.btn-primary:active,.btn-primary:focus,.btn-primary:hover,.open>.dropdown-toggle.btn-primary {
+    color: #fff;
+    background-color: #de6501!important;
+    border-color: #de6501!important
+}
+
+#ql-form-container.form-rick-40pct form .form-submit .text {
+    font-size: 21px;
+    color: #0c8a26;
+    letter-spacing: 0;
+    line-height: 40px;
+    font-weight: 700;
+    display: block;
+}
+
+.as-seen-on-tv {
+    display: block;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.as-seen-on-tv:before {
+    content: 'Anunciado en TV';
+    display: inline-block;
+    line-height: 42px;
+    padding-right: 150px;
+    background: url(//es.habcdn.com/static/img/layout/super-footer-tv.png) no-repeat right;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+#ql-form-container.form-rick-40pct form .fields label.title-label {
+    font-size: 21px;
+    color: #2b2b2b;
+    font-weight: 400;
+    letter-spacing: 0;
+}
+
+label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+}

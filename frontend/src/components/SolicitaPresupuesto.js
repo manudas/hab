@@ -18,100 +18,29 @@ class SolicitarPresupuesto extends Component {
 								<div className="col-lg-12 col-md-12">
 									<div className="clearfix">
 										<div className="progress hab-progress-bar unique quotation-progress low">
-											<div className="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="1" styles="width: 20%;">
+											<div className="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="1" style={{ width: '20%' }}>
 												<span className="sr-only">1%</span>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div className="step col-12" data-step-name="location" styles="display: block;">
+							<div className="step col-12" data-step-name="location" style={{ display: 'block' }}>
 								<input name="step_fields" id="step_fields" value="location_id,zip" type="hidden" />
 								<div className="fields">
-									<label className="title-label" for="zip">¿Dónde quieres realizar el trabajo?</label>
+									<label className="title-label mb-5" for="zip">¿Dónde quieres realizar el trabajo?</label>
 									<div className="form-field form-group p_zip  ">
 										<label id="zip-label" for="zip">Código postal</label>
 										<div className="row">
 											<div className="col-sm-6 col-12 one-line-height">
 												<input id="zip" name="zip" size="6" className="form-control" autocomplete="nope" type="text" />&nbsp;
-								</div>
-											<small className="col-sm-6 col-12" data-action="search-zip"><a className="raquo" href="javascript:void(0)" id="show_location_data">¿No lo recuerdas?</a> </small>
-										</div>
-									</div>
-									<div id="location_fields" className="hidden" styles="display: none;">
-										<div className="form-field form-group p_state responsive_select" data-original-title="" title="">
-											<label id="state-label" for="state">Provincia</label>
-											<div>
-												<select id="state" name="state" className="form-control">
-													<option value="">Selecciona una provincia</option>
-													<option value="6392">A Coruña</option>
-													<option value="6382">Álava</option>
-													<option value="6375">Albacete</option>
-													<option value="6372">Alicante</option>
-													<option value="6361">Almería</option>
-													<option value="6401">Andorra</option>
-													<option value="6376">Asturias</option>
-													<option value="6393">Ávila</option>
-													<option value="6387">Badajoz</option>
-													<option value="6356">Barcelona</option>
-													<option value="6383">Burgos</option>
-													<option value="6399">Cáceres</option>
-													<option value="6364">Cádiz</option>
-													<option value="6367">Cantabria</option>
-													<option value="6374">Castellón</option>
-													<option value="6350">Ceuta</option>
-													<option value="6366">Ciudad Real</option>
-													<option value="6365">Córdoba</option>
-													<option value="6388">Cuenca</option>
-													<option value="6396">Girona</option>
-													<option value="6352">Granada</option>
-													<option value="6363">Guadalajara</option>
-													<option value="6390">Guipúzcoa</option>
-													<option value="6384">Huelva</option>
-													<option value="6385">Huesca</option>
-													<option value="6359">Illes Balears</option>
-													<option value="6354">Jaén</option>
-													<option value="6391">La Rioja</option>
-													<option value="6389">Las Palmas</option>
-													<option value="6394">León</option>
-													<option value="6397">Lleida</option>
-													<option value="6355">Lugo</option>
-													<option value="6358">Madrid</option>
-													<option value="6395">Málaga</option>
-													<option value="6351">Melilla</option>
-													<option value="6362">Murcia</option>
-													<option value="6378">Navarra</option>
-													<option value="6377">Ourense</option>
-													<option value="6368">Palencia</option>
-													<option value="6370">Pontevedra</option>
-													<option value="6400">Salamanca</option>
-													<option value="6373">Santa Cruz de Tenerife</option>
-													<option value="6381">Segovia</option>
-													<option value="6379">Sevilla</option>
-													<option value="6369">Soria</option>
-													<option value="6386">Tarragona</option>
-													<option value="6357">Teruel</option>
-													<option value="6360">Toledo</option>
-													<option value="6353">Valencia</option>
-													<option value="6398">Valladolid</option>
-													<option value="6349">Vizcaya</option>
-													<option value="6380">Zamora</option>
-													<option value="6371">Zaragoza</option>
-												</select>
-											</div>
-										</div>
-										<div className="form-field form-group p_city responsive_select" data-original-title="" title="">
-											<label className="" for="city">Población</label>
-											<div className="">
-												<select id="city" name="city" className="location_id form-control">
-													<option value="">Selecciona una población</option>
-												</select>
 											</div>
 										</div>
 									</div>
+									
 								</div>
 							</div>
-							<div className="step col-12" data-step-name="categories" styles="display: none;">
+							<div className="step col-12" data-step-name="categories" style={{ display: 'none' }}>
 								<input name="step_fields" id="step_fields" value="category_id" type="hidden" />
 								<div className="fields">
 									<div className="form-field form-group responsive_select" data-original-title="" title="">
@@ -236,7 +165,7 @@ class SolicitarPresupuesto extends Component {
 							<div id="dynamic-questions-container"></div>
 							<div id="ondemand-questions-container"></div>
 							<div id="static-questions-container"></div>
-							<div id="estimated-date-step" className="step col-12" data-step-name="date" styles="display: none;">
+							<div id="estimated-date-step" className="step col-12" data-step-name="date" style={{ display: 'none' }}>
 								<input name="step_fields" id="step_fields" value="estimated_date" type="hidden" />
 								<div className="fields">
 									<div className="form-field form-group responsive_select" id="p_estimated_date" data-original-title="" title="">
@@ -268,7 +197,7 @@ class SolicitarPresupuesto extends Component {
 								</div>
 							</div>
 						</div>
-						<div id="description-step" className="step col-12" data-step-name="description" styles="display: none;">
+						<div id="description-step" className="step col-12" data-step-name="description" style={{ display: 'none' }}>
 							<div className="fields">
 								<input name="step_fields" id="step_fields" value="description" type="hidden" />
 								<div className="form-field form-group">
@@ -289,18 +218,18 @@ class SolicitarPresupuesto extends Component {
 									</div>
 									<div className="row question-form-more">
 										<div className="col-12 question-form-photos text-center">
-											<div id="upload-picture" title="" className="btn btn-lg btn-default btn-icon" styles="position: relative; z-index: 1;">
+											<div id="upload-picture" title="" className="btn btn-lg btn-default btn-icon" style={{ position: 'relative', zIndex: 1 }}>
 												<i className="icon icon-camera-o icon-lg"></i>
 												Adjuntar fotografías        <span className="muted">(si quieres)</span>
 											</div>
-											<div id="html5_1cmn7aof8adb28jlct17vl1kuk3_container" className="moxie-shim moxie-shim-html5" styles="position: absolute; top: 0px; left: 0px; width: 0px; height: 0px; overflow: hidden; z-index: 0;"><input id="html5_1cmn7aof8adb28jlct17vl1kuk3" styles="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept="image/jpeg,image/png,image/gif,image/bmp" type="file" /></div>
+											<div id="html5_1cmn7aof8adb28jlct17vl1kuk3_container" className="moxie-shim moxie-shim-html5" style={{ position: 'absolute', top: '0px', left: '0px', width: '0px', height: '0px', overflow: 'hidden', zIndex: 0 }}><input id="html5_1cmn7aof8adb28jlct17vl1kuk3" style={{ fontSize: '999px', opacity: 0, position: 'absolute', top: '0px', left: '0px', width: '100%', height: '100%' }} multiple="" accept="image/jpeg,image/png,image/gif,image/bmp" type="file" /></div>
 										</div>
 									</div>
 									<input name="images" type="hidden" />
 								</div>
 							</div>
 						</div>
-						<div className="step col-12 info-step" data-step-name="contact_details" styles="display: none;">
+						<div className="step col-12 info-step" data-step-name="contact_details" style={{ display: 'none' }}>
 							<input name="step_fields" id="step_fields" value="contact_name,contact_mail,contact_phone,phone_provider,phone_type,referrer,newsletter_subscribe,contact_phone_secondary" type="hidden" />
 							<div className="fields info-fields">
 								<label className="title-label" for="zip">Tus datos de contacto</label>
@@ -372,23 +301,23 @@ class SolicitarPresupuesto extends Component {
 							</div>
 						</div>
 
-						<div className="form-submit text-center" id="form-submit" styles="display: block;">
+						<div className="form-submit text-center" id="form-submit" style={{ display: 'block' }}>
 							<input name="step" value="1" id="step" type="hidden" />
 							<input name="is-ondemand" value="0" id="is-ondemand" type="hidden" />
 							<input name="source_page" value="quotation-showList" id="source_page" type="hidden" />
 							<small className="form-step">
-								<a href="javascript:void(0)" id="previous-step" className="back btn-link" styles="display: none;">« Volver</a>
+								<a href="javascript:void(0)" id="previous-step" className="back btn-link" style={{ display: 'none' }}>« Volver</a>
 							</small>
 							<button className="btn btn-primary btn-lg next ql-submit" id="next-step">Continuar »</button>
-							<button className="btn btn-primary btn-lg next ql-submit" id="submit-quotation" styles="display: none;">Solicitar presupuestos</button>
-							<span className="text text-center">
+							<button className="btn btn-primary btn-lg next ql-submit" id="submit-quotation" style={{ display: 'none' }}>Solicitar presupuestos</button>
+							<span className="text text-center mb-4">
 								gratis y sin compromiso      </span>
 						</div>
 					</form>
 				</div>
 
 				<div className="clear mt_30">
-					<span className="as-seen-on-tv"><img alt="Anunciado en TV" src="https://es.habcdn.com/static/img/seen-on-tv.png" /></span>
+					<span className="as-seen-on-tv">&nbsp;</span>
 				</div>
 			</div >
 		);
