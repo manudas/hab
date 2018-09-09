@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 const GarantiaHabitisimo = (props) => {
 	return (
 		<div className="container-fluid guaranteeBanner">
-			<div className="container">
+			<div className="container row mx-auto">
 				<div className="logo col-md-12 col-lg-2">
 					<img src="https://es.habcdn.com/images/warranty/guarantee-white.png" />    
 				</div>
