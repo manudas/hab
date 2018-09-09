@@ -30,13 +30,13 @@ class Usuario {
         else {
             $errores = array();                                            
             if (empty($email) || (strpos($email, 'hotmail') !== false) 
-                    || empty($telefono) || NAN($telefono) 
+                    || empty($telefono) || is_nan($telefono) 
                     || empty($nombre)) {
 
                 if(empty($email) || (strpos($email, 'hotmail') !== false)){
                     $errores[] = 'email';
                 }
-                if(empty($telefono) || NAN($telefono)){
+                if(empty($telefono) || is_nan($telefono)){
                     $errores[] = 'telefono';
                 }
                 if(empty($nombre)){
