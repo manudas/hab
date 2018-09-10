@@ -1,6 +1,8 @@
-function hasPreviousData() {
+export const action_restore_data = 'action_restore_data';
+
+export function restorePreviousData() {
     var cookie = document.cookie;
-    var cookie_obj = str.split(/[;] */).reduce(function(result, pairStr) {
+    var cookie_obj = cookie.split(/[;] */).reduce(function(result, pairStr) {
         var arr = pairStr.split('=');
         if (arr.length === 2) {
             result[arr[0]] = arr[1];
@@ -8,7 +10,7 @@ function hasPreviousData() {
         return result;
     }, {});
     return {
-        type: HAS_PREVIOUS_DATA,
+        type: action_restore_data,
         payload: cookie_obj
     };
 }
