@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
+
+import { withCookies, Cookies } from 'react-cookie';
 
 class SolicitarPresupuesto extends Component {
 	constructor(props) {
@@ -38,15 +41,11 @@ class SolicitarPresupuesto extends Component {
 								<input name="step_fields" id="step_fields" value="location_id,zip" type="hidden" />
 								<div className="fields">
 									<label className="title-label mb-5" for="zip">¿Dónde quieres realizar el trabajo?</label>
-									<div className="form-field form-group p_zip  ">
-										<label id="zip-label" for="zip">Código postal</label>
-										<div className="row">
-											<div className="col-sm-6 col-12 one-line-height">
-												<input id="zip" name="zip" size="6" className="form-control" autocomplete="nope" type="text" />&nbsp;
-											</div>
-										</div>
-									</div>
-									
+									<Field 
+										name="direccion"
+										onChange={this.saveCookieValue.bind(this)}
+										component={this.renderZipField}
+									/>		
 								</div>
 							</div>
 							<div className="step col-12" data-step-name="categories" style={{ display: 'none' }}>
@@ -331,8 +330,36 @@ class SolicitarPresupuesto extends Component {
 			</div >
 		);
 	}
+
+	renderZipField(field) {
+		let emptyZip = 
+			(<div class="error-container">
+				<span class="control-label form_error" id="zip_error">Debes rellenar este campo con un número</span>
+			</div>);
+		return (
+			<div className="form-field form-group p_zip  ">
+				<label id="zip-label" for="direccion">Código postal o dirección</label>
+				{field.meta.touched && 
+					(!field.input.value || isNaN(field.input.value)) ? emptyZip : ''}
+				
+				<div className="row">
+					<div className="col-sm-6 col-12 one-line-height">
+					<input id="zip" size="6" className="form-control" autocomplete="nope" type="text" 
+						{...field.input}
+					/>&nbsp;	
+					</div>
+				</div>
+			</div>);
+	}
+
+	saveCookieValue(event) {
+		let value = event.target.value;
+		let name = event.target.name;
+		this.props.cookies.set(name, value, { path: '/' });
+	}
 }
 
+/*
 function mapStateToProps(state) {
 	return {
 		fields : state.fields
@@ -340,3 +367,16 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps)(SolicitarPresupuesto);
+*/
+function validate(values) {
+	var errores = {};
+	if (!values.direccion) {
+		errores.direccion = "Error codigo postal / direccion";
+	}
+	return errores;
+}
+
+export default reduxForm({
+	validate: validate,
+	form: 'budgetForm'
+})(withCookies(SolicitarPresupuesto));
