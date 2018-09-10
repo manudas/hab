@@ -9,6 +9,10 @@ import GarantiaHabitissimo from '../components/GarantiaHabitissimo';
 import {restore_data} from '../actions_creators/action_creator_onload'
 
 class Presupuesto extends Component {
+	constructor(props) {
+        super(props);
+	}
+	
 	render() {
 		return (
 			<div id="form-wrapper">
@@ -42,9 +46,10 @@ class Presupuesto extends Component {
 	}
 }
 
-function mapDispatchToProps(dispatch) {
-	bindActionCreators( {fields: restore_data}, dispatch);
+function mapDistpatchToProps(dispatch) {
+	return bindActionCreators({
+		restore_data: restore_data
+	}, dispatch);
 }
-
-
-export default connect(null, mapDispatchToProps)(Presupuesto);
+  
+export default connect(null, mapDistpatchToProps)(Presupuesto);

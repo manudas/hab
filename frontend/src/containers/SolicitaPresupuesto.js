@@ -2,11 +2,19 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 class SolicitarPresupuesto extends Component {
+	constructor(props) {
+        super(props);
+	}
+	
+	onFormSubmit(event) {
+		event.preventDefault();
+	}
+
 	render() {
 		return (
 			<div id="ql-quotation-request" className="col-lg-7 col-md-7 col-12">
 				<div id="ql-form-container" className="form-40pct form-rick-40pct  header-container">
-					<form action="https://www.habitissimo.es/presupuestos/nuevo?source_page=quotation-showList#" method="post" id="ql-form" className="step-1 max-1 lang-es bg-light border" data-trackid="ProcesoSolicitud">
+					<form onSubmit={this.onFormSubmit} action="//localhost/nuevo?source_page=quotation-showList#" method="post" id="ql-form" className="step-1 max-1 lang-es bg-light border" data-trackid="ProcesoSolicitud">
 						<i className="icon icon-spinner icon-spin hidden"></i>
 						<a name="form"></a>
 						<header className="quotation-form-header clearfix ">
