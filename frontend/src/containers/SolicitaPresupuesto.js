@@ -9,10 +9,19 @@ class SolicitarPresupuesto extends Component {
         super(props);
 	}
 	
+	/**
+	 * Prevents unwanted submition
+	 * and manages the desired behaviour
+	 * when submiting
+	 * @param {*} event 
+	 */
 	onFormSubmit(event) {
 		event.preventDefault();
 	}
 
+	/**
+	 * Renders the component
+	 */
 	render() {
 		return (
 			<div id="ql-quotation-request" className="col-lg-7 col-md-7 col-12">
@@ -331,6 +340,10 @@ class SolicitarPresupuesto extends Component {
 		);
 	}
 
+	/**
+	 * Renders the ZIP / Address field
+	 * @param {*} field 
+	 */
 	renderZipField(field) {
 		let emptyZip = 
 			(<div class="error-container">
@@ -352,6 +365,10 @@ class SolicitarPresupuesto extends Component {
 			</div>);
 	}
 
+	/**
+	 * Saves the value of the input in a cookie
+	 * @param {*} event 
+	 */
 	saveCookieValue(event) {
 		let value = event.target.value;
 		let name = event.target.name;
@@ -359,15 +376,11 @@ class SolicitarPresupuesto extends Component {
 	}
 }
 
-/*
-function mapStateToProps(state) {
-	return {
-		fields : state.fields
-	}
-}
-
-export default connect(mapStateToProps)(SolicitarPresupuesto);
-*/
+/**
+ * Ensure all the fields are correct
+ * before the submition to the backend
+ * @param {*} values 
+ */
 function validate(values) {
 	var errores = {};
 	if (!values.direccion) {
