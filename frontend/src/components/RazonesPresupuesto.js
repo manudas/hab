@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 // No need for a className here
 const RazonesPresupuesto = (props) => {

@@ -8,5 +8,10 @@ import registerServiceWorker from './registerServiceWorker';
 
 import './habitissimo.css';
 
-ReactDOM.render(<Presupuesto />, document.getElementById('root'));
+ReactDOM.render(
+ <Provider store={configureStore()}>
+  <Presupuesto />
+ </Provider>,
+ document.getElementById('root')
+);
 registerServiceWorker();
