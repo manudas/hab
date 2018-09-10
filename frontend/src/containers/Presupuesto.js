@@ -6,9 +6,8 @@ import RazonesPresupuesto from '../components/RazonesPresupuesto';
 import SolicitaPresupuesto from './SolicitaPresupuesto';
 import GarantiaHabitissimo from '../components/GarantiaHabitissimo';
 
-import {restorePreviousData} from '../actions_creators/action_creator_onload'
+import {restore_data} from '../actions_creators/action_creator_onload'
 
-// No need for a class here
 class Presupuesto extends Component {
 	render() {
 		return (
@@ -39,12 +38,12 @@ class Presupuesto extends Component {
 		);
 	}
 	componentDidMount() {
-		this.props.restorePreviousData();
+		this.props.restore_data();
 	}
 }
 
 function mapDispatchToProps(dispatch) {
-	bindActionCreators( {fields: restorePreviousData}, dispatch);
+	bindActionCreators( {fields: restore_data}, dispatch);
 }
 
 

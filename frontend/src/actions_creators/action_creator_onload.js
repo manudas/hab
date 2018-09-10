@@ -1,6 +1,6 @@
 export const action_restore_data = 'action_restore_data';
 
-export function restorePreviousData() {
+export function restore_data() {
     var cookie = document.cookie;
     var cookie_obj = cookie.split(/[;] */).reduce(function(result, pairStr) {
         var arr = pairStr.split('=');
