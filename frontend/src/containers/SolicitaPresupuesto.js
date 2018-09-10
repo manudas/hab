@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
 class SolicitarPresupuesto extends Component {
 	render() {
@@ -324,4 +325,10 @@ class SolicitarPresupuesto extends Component {
 	}
 }
 
-export default SolicitarPresupuesto;
+function mapStateToProps(state) {
+	return {
+		fields : state.fields
+	}
+}
+
+export default connect(mapStateToProps)(SolicitarPresupuesto);

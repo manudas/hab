@@ -1,7 +1,7 @@
 import React from 'react';
 
 import RazonesPresupuesto from './RazonesPresupuesto';
-import SolicitaPresupuesto from './SolicitaPresupuesto';
+import SolicitaPresupuesto from '../containers/SolicitaPresupuesto';
 import GarantiaHabitissimo from './GarantiaHabitissimo';
 
 // No need for a class here
