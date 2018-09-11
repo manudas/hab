@@ -19,10 +19,12 @@ class SolicitarPresupuesto extends Component {
 	constructor(props) {
         	super(props);
 			this.continuePressed = false;
+			this.renderText = this.renderTextField.bind(this);
 	}
 
 	componentDidMount() {
 		this.current_step = (this.props.fields.step != undefined) ? this.props.fields.step : 'location_step';
+		// this.current_step = 'location_step';
 	}
 	
 	/**
@@ -69,9 +71,10 @@ class SolicitarPresupuesto extends Component {
 								<div className="fields">
 									<label className="title-label mb-5" htmlFor="direccion">¿Dónde quieres realizar el trabajo?</label>
 									<Field 
+										key="direccion"
 										name="direccion"
 										onChange={this.saveCookieValue.bind(this)}
-										component={this.renderTextField.bind(this)}
+										component={this.renderText}
 										required={true}
 										label="Código postal o dirección"
 										className = "formField" 
@@ -86,7 +89,7 @@ class SolicitarPresupuesto extends Component {
 									<Field 
 										name="categoria"
 										onChange={this.saveCookieValue.bind(this)}
-										component={this.renderTextField.bind(this)}
+										component={this.renderText}
 										required={false}
 										label="Categoría"
 										className="formField"
@@ -137,27 +140,7 @@ class SolicitarPresupuesto extends Component {
 									</div>
 								</div>
 							</div>
-							<div className="fields">
-								<script src="https://www.habitissimo.es/components/plupload/js/plupload.full.min.js"></script>
-								<div className="upload-photo-button">
-									<div id="pictures" className="row">
-										<div className="col-md-12 form-group clearfix">
-											<ul className="clearfix">
-											</ul>
-										</div>
-									</div>
-									<div className="row question-form-more">
-										<div className="col-12 question-form-photos text-center">
-											<div id="upload-picture" title="" className="btn btn-lg btn-default btn-icon" style={{ position: 'relative', zIndex: 1 }}>
-												<i className="icon icon-camera-o icon-lg"></i>
-												Adjuntar fotografías        <span className="muted">(si quieres)</span>
-											</div>
-											<div id="html5_1cmn7aof8adb28jlct17vl1kuk3_container" className="moxie-shim moxie-shim-html5" style={{ position: 'absolute', top: '0px', left: '0px', width: '0px', height: '0px', overflow: 'hidden', zIndex: 0 }}><input id="html5_1cmn7aof8adb28jlct17vl1kuk3" style={{ fontSize: '999px', opacity: 0, position: 'absolute', top: '0px', left: '0px', width: '100%', height: '100%' }} multiple="" accept="image/jpeg,image/png,image/gif,image/bmp" type="file" /></div>
-										</div>
-									</div>
-									<input name="images" type="hidden" />
-								</div>
-							</div>
+							
 						</div>
 						<div id="contact_details" className="step col-12 info-step" data-step-name="contact_details" style={{ display: this.current_step == 'contact_details' ? 'block' : 'none' }}>
 							<input name="step_fields" id="step_fields" value="contact_name,contact_mail,contact_phone,phone_provider,phone_type,referrer,newsletter_subscribe,contact_phone_secondary" type="hidden" />
@@ -185,22 +168,7 @@ class SolicitarPresupuesto extends Component {
 									Los profesionales pagan una cuota por acceder a tu solicitud. Por favor, asegúrate de que la información facilitada es correcta.
 						</p>
 								
-								<div className="row">
-									<div className="col-12 terms-column">
-										<div className="form-field form-group p_terms">
-											<div className="check-field">
-												<label>
-													<input name="terms_and_conditions" id="terms_and_conditions" type="checkbox" />       He leído y acepto la Política de Privacidad y Condiciones que se presenta <a target="_blank" href="https://www.habitissimo.es/politica_de_privacidad" >aquí</a>    </label>
-											</div>
-										</div>
-										<div className="form-field form-group p_bulletin">
-											<div className="check-field">
-												<label>
-													<input name="third_party" id="third_party" type="checkbox" />      Deseo recibir comunicaciones comerciales de terceros    </label>
-											</div>
-										</div>
-									</div>
-								</div>
+								
 								<div className="clearfix alert notice notice_info">
 									<i className="icon icon-info-circle-o"></i>
 									<span className="msg">Comprueba que tus datos son correctos ya que <b>los profesionales pagan una cuota</b> para poder acceder a tu solicitud de presupuesto.</span>
