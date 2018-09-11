@@ -4,13 +4,15 @@ import { Field, reduxForm } from 'redux-form';
 
 import { withCookies, Cookies } from 'react-cookie';
 
+import RadioButtons from '../components/RadioButtons';
+
 class SolicitarPresupuesto extends Component {
 
 	steps = 
 		[
 			{current_step: 'location_step', next_step: 'categories_step'},
 			{current_step: 'categories_step', previous_step: 'location_step', next_step: 'estimated-date-step'},
-			{current_step: 'estimated-date-step', previous_step: 'location_step', next_step: 'description-step'},
+			{current_step: 'estimated-date-step', previous_step: 'categories_step', next_step: 'description-step'},
 			{current_step: 'description-step', previous_step: 'estimated-date-step', next_step: 'contact_details'},
 			{current_step: 'contact_details', previous_step: 'description-step'}
 		];
@@ -20,11 +22,22 @@ class SolicitarPresupuesto extends Component {
         	super(props);
 			this.continuePressed = false;
 			this.renderText = this.renderTextField.bind(this);
+			this.renderTextArea = this.renderTextAreaField.bind(this);
 	}
 
+	componentWillUpdate() {
+		if (this.lastFormWasValid) {
+			this.continuePressed = false;
+		}
+	}
+	/*
+	componentDidUpdate() {
+		this.continuePressed = false;
+	}
+*/
 	componentDidMount() {
-		this.current_step = (this.props.fields.step != undefined) ? this.props.fields.step : 'location_step';
-		// this.current_step = 'location_step';
+		this.props.fields.step = (this.props.fields.step != undefined) ? this.props.fields.step : 'location_step';
+		// this.props.fields.step = 'location_step';
 	}
 	
 	/**
@@ -37,12 +50,14 @@ class SolicitarPresupuesto extends Component {
 		event.preventDefault();
 		this.continuePressed = true;
 		this.moveForward(event);
+		this.forceUpdate();
 	}
 
 	/**
 	 * Renders the component
 	 */
 	render() {
+		var percentage = this.calculateStepPercentage();
 		return (
 			<div id="ql-quotation-request" className="col-lg-7 col-md-7 col-12">
 				<div id="ql-form-container" className="form-40pct form-rick-40pct  header-container">
@@ -59,14 +74,14 @@ class SolicitarPresupuesto extends Component {
 								<div className="col-lg-12 col-md-12">
 									<div className="clearfix">
 										<div className="progress hab-progress-bar unique quotation-progress low">
-											<div className="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="1" style={{ width: '20%' }}>
-												<span className="sr-only">1%</span>
+											<div className="progress-bar" role="progressbar" aria-valuenow="1" aria-valuemin="0" aria-valuemax="1" style={{ width: percentage+'%' }}>
+												<span className="sr-only">{percentage}%</span>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-							<div id="location_step" className="step col-12" data-step-name="location_step" style={{ display: this.current_step == 'location_step' ? 'block' : 'none' }}>
+							<div id="location_step" className="step col-12" data-step-name="location_step" style={{ display: this.props.fields.step == 'location_step' ? 'block' : 'none' }}>
 								<input name="step_fields" id="step_fields" value="location_id,zip" type="hidden" />
 								<div className="fields">
 									<label className="title-label mb-5" htmlFor="direccion">¿Dónde quieres realizar el trabajo?</label>
@@ -77,12 +92,11 @@ class SolicitarPresupuesto extends Component {
 										component={this.renderText}
 										required={true}
 										label="Código postal o dirección"
-										className = "formField" 
-										value={this.props.fields.direccion}
+										className = "formField"
 									/>		
 								</div>
 							</div>
-							<div id="categories_step" className="step col-12" data-step-name="categories_step" style={{ display: this.current_step == 'categories_step' ? 'block' : 'none' }}>
+							<div id="categories_step" className="step col-12" data-step-name="categories_step" style={{ display: this.props.fields.step == 'categories_step' ? 'block' : 'none' }}>
 								<input name="step_fields" id="step_fields" value="category_id" type="hidden" />
 								<div className="fields">
 
@@ -93,81 +107,117 @@ class SolicitarPresupuesto extends Component {
 										required={false}
 										label="Categoría"
 										className="formField"
-										value={this.props.fields.categoria}
+										required={true}
 									/>
 									
+									<Field 
+										name="subcategoria"
+										onChange={this.saveCookieValue.bind(this)}
+										component={this.renderText}
+										required={false}
+										label="Subcategoría. Por favor sea más específico (no integrado en Back)"
+										className="formField"
+										required={true}
+									/>
+
 								</div>
 							</div>
-							<div id="estimated-date-step" className="step col-12" data-step-name="estimated-date-step" style={{ display: this.current_step == 'estimated-date-step' ? 'block' : 'none' }}>
+							<div id="estimated-date-step" className="step col-12" data-step-name="estimated-date-step" style={{ display: this.props.fields.step == 'estimated-date-step' ? 'block' : 'none' }}>
 								<input name="step_fields" id="step_fields" value="estimated_date" type="hidden" />
 								<div className="fields">
 									<div className="form-field form-group responsive_select" id="p_estimated_date" data-original-title="" title="">
-										<label className="title-label" htmlFor="estimated_date">¿Cuándo quieres realizar el trabajo?</label>
+										<label className="title-label" htmlFor="estimated_date">¿Cuándo quieres realizar el trabajo? NO INTEGARDO EN BACK</label>
 										<div className="input-container">
 											<div className="radios checkbox-group" id="estimated_date" name="estimated_date" />
-											<div className="col-lg-12">
-												<input name="estimated_date" value="ASAP" id="estimated_date_ASAP" type="radio" />
-												<label className="button-label" htmlFor="estimated_date_ASAP">
-													Lo antes posible</label>
-											</div>
-											<div className="col-lg-12">
-												<input name="estimated_date" value="LESS_3M" id="estimated_date_LESS_3M" type="radio" />
-												<label className="button-label" htmlFor="estimated_date_LESS_3M">
-													De 1 a 3 meses</label>
-											</div>
-											<div className="col-lg-12">
-												<input name="estimated_date" value="MORE_3M" id="estimated_date_MORE_3M" type="radio" />
-												<label className="button-label" htmlFor="estimated_date_MORE_3M">
-													Más de 3 meses</label>
-											</div>
-											<div className="col-lg-12">
-												<input name="estimated_date" value="NO_PLANNED" id="estimated_date_NO_PLANNED" type="radio" />
-												<label className="button-label" htmlFor="estimated_date_NO_PLANNED">
-													De momento no tengo pensado hacerlo</label>
-											</div>
+
+											<RadioButtons
+												onChange={this.saveCookieValue.bind(this)}
+												name="estimated_date"
+												options={[
+													{
+														id: 'estimated_date_ASAP',
+														label: 'Lo antes posible',
+														value: 'ASAP',
+														className: "formField col-lg-12"
+													},
+													{
+														id: 'estimated_date_LESS_3M',
+														label: 'De 1 a 3 meses',
+														value: 'LESS_3M',
+														className: "formField col-lg-12"
+													},
+													{
+														id: 'estimated_date_MORE_3M',
+														label: 'Más de 3 meses',
+														value: 'MORE_3M',
+														className: "formField col-lg-12"
+													},
+													{
+														id: 'estimated_date_NO_PLANNED',
+														label: 'De momento no tengo pensado hacerlo',
+														value: 'NO_PLANNED',
+														className: "formField col-lg-12"
+													}
+												]}
+											/>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div id="description-step" className="step col-12" data-step-name="description-step" style={{ display: this.current_step == 'description-step' ? 'block' : 'none' }}>
+						<div id="description-step" className="step col-12" data-step-name="description-step" style={{ display: this.props.fields.step == 'description-step' ? 'block' : 'none' }}>
 							<div className="fields">
 								<input name="step_fields" id="step_fields" value="description" type="hidden" />
-								<div className="form-field form-group">
-									<label className="title-label" htmlFor="description">Cuéntanos más detalles sobre el trabajo, si quieres</label>
-									<div className="input-container">
-										<textarea rows="6" cols="30" name="description" className="form-control" id="description" placeholder="Si lo deseas, puedes dar más detalles del trabajo que necesitas para que los profesionales sean más precisos a la hora de pasarte presupuesto. No incluyas ningún dato de contacto."></textarea>
-									</div>
-								</div>
-							</div>
-							
+
+								<Field
+									className="formField"
+									rows="6"
+									cols="30"
+									name="description" 
+									placeholder="Danos más detalles del trabajo que necesitas para que los profesionales sean más precisos a la hora de pasarte presupuesto. No incluyas ningún dato de contacto."
+									onChange={this.saveCookieValue.bind(this)}
+									label="Cuéntanos más detalles sobre el trabajo"
+									required={true}
+									component={this.renderTextArea}
+								/>
+
+							</div>				
 						</div>
-						<div id="contact_details" className="step col-12 info-step" data-step-name="contact_details" style={{ display: this.current_step == 'contact_details' ? 'block' : 'none' }}>
+						<div id="contact_details" className="step col-12 info-step" data-step-name="contact_details" style={{ display: this.props.fields.step == 'contact_details' ? 'block' : 'none' }}>
 							<input name="step_fields" id="step_fields" value="contact_name,contact_mail,contact_phone,phone_provider,phone_type,referrer,newsletter_subscribe,contact_phone_secondary" type="hidden" />
 							<div className="fields info-fields">
 								<label className="title-label" htmlFor="zip">Tus datos de contacto</label>
-								<div className="form-field form-group p_name">
-									<label className="" htmlFor="contact_name">Tu nombre</label>
-									<div className="">
-										<input id="contact_name" className="full-width fb-input-name form-control" name="name" value="" autoComplete="nope" type="text" />
-									</div>
-								</div>
-								<div className="form-field form-group p_email" data-original-title="" title="">
-									<label className="" htmlFor="email">E-mail</label>
-									<div className="">
-										<input id="contact_mail" className="full-width fb-input-email form-control" name="email" value="" autoComplete="nope" type="text" />
-									</div>
-								</div>
-								<div className="form-field form-group p_phone_1" data-original-title="" title="">
-									<label className="" htmlFor="phone">Teléfono</label>
-									<div id="contact-phone-container">
-										<input id="contact_phone" name="phone" className="full-width form-control" value="" autoComplete="nope" type="text" />
-									</div>
-								</div>
+								<Field 
+									key="nombre"
+									name="nombre"
+									onChange={this.saveCookieValue.bind(this)}
+									component={this.renderText}
+									required={true}
+									label="Tu nombre"
+									className = "formField full-width fb-input-name"
+								/>
+								<Field 
+									key="email"
+									name="email"
+									onChange={this.saveCookieValue.bind(this)}
+									component={this.renderText}
+									required={true}
+									label="E-mail. enviar ajax para checkear y poner data-valid a false"
+									className = "formField full-width fb-input-name"
+								/>
+								<Field 
+									key="telefono"
+									name="telefono"
+									onChange={this.saveCookieValue.bind(this)}
+									component={this.renderText}
+									required={true}
+									label="Teléfono"
+									className = "formField full-width fb-input-name"
+								/>
+
 								<p id="quality-advise" className="m-text hidden">
 									Los profesionales pagan una cuota por acceder a tu solicitud. Por favor, asegúrate de que la información facilitada es correcta.
-						</p>
-								
+								</p>
 								
 								<div className="clearfix alert notice notice_info">
 									<i className="icon icon-info-circle-o"></i>
@@ -199,7 +249,37 @@ class SolicitarPresupuesto extends Component {
 	}
 
 	/**
-	 * Generic method to render a fields
+	 * Generic method to render a textfield for SolicitarPresupuesto.js
+	 * @param {*} field 
+	 */
+	renderTextAreaField(field) {
+		let empty = 
+			(<div className="error-container">
+				<span className="control-label form_error" id={field.input.name+"_error"}>Debes rellenar este campo</span>
+			</div>);
+		return (
+			<div className="form-field form-group">
+				<label className="title-label" htmlFor="description">{field.label}</label>
+				{field.required && (field.meta.touched || this.continuePressed) && 
+					!field.input.value ? empty : ''}
+				<div className="input-container">
+					<textarea 
+						rows={field.rows} 
+						cols={field.cols} 
+						name={field.name} 
+						className={"form-control "+field.className} 
+						id={field.name} 
+						placeholder={field.placeholder}
+						{...field.input}
+						data-valid={field.required && !field.input.value ? false : true}
+						></textarea>
+				</div>
+			</div>
+		);
+	}
+
+	/**
+	 * Generic method to render a fields for SolicitarPresupuesto.js
 	 * @param {*} field 
 	 */
 	renderTextField(field) {
@@ -208,8 +288,8 @@ class SolicitarPresupuesto extends Component {
 				<span className="control-label form_error" id={field.input.name+"_error"}>Debes rellenar este campo</span>
 			</div>);
 		return (
-			<div className="form-field form-group p_zip  ">
-				<label id="zip-label" htmlFor="direccion">{field.label}</label>
+			<div className={"form-field form-group p_"+field.input.name}>
+				<label id={field.input.name+"-label"} htmlFor={field.input.name}>{field.label}</label>
 				{field.required && (field.meta.touched || this.continuePressed) && 
 					!field.input.value ? empty : ''}
 				
@@ -234,11 +314,23 @@ class SolicitarPresupuesto extends Component {
 		this.props.cookies.set(name, value, { path: '/' });
 	}
 
+	calculateStepPercentage() {
+		let current_step = this.props.fields.step;
+		for (var i = 0; i < this.steps.length; i++) {
+			var step_obj = this.steps[i];
+			if (step_obj.current_step == current_step) {
+				break;
+			}
+		}
+		return (i*100)/(this.steps.length-1);
+	}
+
+
 	/**
 	 * Check if the currents state has a previous step
 	 */
 	hasPreviousStep() {
-		let current_step = this.current_step;
+		let current_step = this.props.fields.step;
 		for (let i = 0; i < this.steps.length; i++) {
 			var step_obj = this.steps[i];
 			if (step_obj.current_step == current_step) {
@@ -255,14 +347,14 @@ class SolicitarPresupuesto extends Component {
 	 * @param {*} event 
 	 */
 	moveForward(event) {
-		let current_step = this.current_step;
+		let current_step = this.props.fields.step;
 		for (let i = 0; i < this.steps.length; i++) {
 			var step_obj = this.steps[i];
 			if (step_obj.current_step == current_step) {
 				break;
 			}
 		}
-		this.continuePressed = true;
+		// this.continuePressed = true;
 		let next_step = step_obj.next_step;
 		// let previous_step = step_obj.previous_step;
 
@@ -273,19 +365,23 @@ class SolicitarPresupuesto extends Component {
 		for (let i = 0; i < fields.length; i ++) {
 			let element = fields[i];
 			var valid = element.getAttribute('data-valid');
-			if (!valid) {
+			if (valid === 'false') {
 				validationPassed = false;
 				break;
 			}
 		}
 		if (validationPassed) {
+			this.lastFormWasValid = true;
 			if (typeof next_step !== 'undefined'){
-				this.current_step = next_step;
+				this.props.fields.step = next_step;
 				this.props.cookies.set('step', next_step, { path: '/' });
 			}
 			else {
 				// send to the server, no more steps
 			}
+		}
+		else {
+			this.lastFormWasValid = false;
 		}
 	}
 
@@ -295,7 +391,7 @@ class SolicitarPresupuesto extends Component {
 	 * @param {*} event 
 	 */
 	moveBack(event) {
-		let current_step = this.current_step;
+		let current_step = this.props.fields.step;
 		for (let i = 0; i < this.steps.length; i++) {
 			var step_obj = this.steps[i];
 			if (step_obj.current_step == current_step) {
@@ -305,7 +401,7 @@ class SolicitarPresupuesto extends Component {
 		let previous_step = step_obj.previous_step;
 		if (typeof previous_step !== 'undefined') {
 			this.props.cookies.set('step', previous_step, { path: '/' });
-			this.current_step = previous_step;
+			this.props.fields.step = previous_step;
 		}
 	}
 }
@@ -318,14 +414,26 @@ class SolicitarPresupuesto extends Component {
 function validate(values) {
 	var errores = {};
 	if (!values.direccion) {
-		errores.direccion = "Error codigo postal / direccion";
+		errores.direccion = "Error codigo postal / dirección";
 	}
+	if (!values.categoria || !values.subcategoria) {
+		errores.direccion = "Error en categoría o subcategoría";
+	}
+
 	return errores;
 }
 
-const mapStateToProps = state => ({
-  fields: state.fields
-});
+const mapStateToProps = state => {
+	var decodedInitialValues = {};
+	for (var key in state.fields) {
+		decodedInitialValues[key] = decodeURIComponent(state.fields[key]);
+	}
+	var obj = {
+		fields: state.fields, // podemos sustituir todos los usos de fields por initialValues siempre que utilicemos redux-forms
+		initialValues: decodedInitialValues
+	};
+	return obj;
+};
 
 export default connect(mapStateToProps)(reduxForm({
 	validate: validate,

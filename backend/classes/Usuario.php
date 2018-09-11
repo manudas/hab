@@ -2,6 +2,13 @@
 class Usuario {
     private static $db = null;
 
+    /** 
+     * Validates an email
+     */
+    public static function validateEmail($email) {
+        return !(empty($email) || (strpos($email, 'hotmail') !== false));
+    }
+
     /**
      * Initialize DB, compulsory to construct the object
      */
@@ -29,11 +36,11 @@ class Usuario {
         }
         else {
             $errores = array();                                            
-            if (empty($email) || (strpos($email, 'hotmail') !== false) 
+            if (!self::validateEmail($email) 
                     || empty($telefono) || is_nan($telefono) 
                     || empty($nombre)) {
 
-                if(empty($email) || (strpos($email, 'hotmail') !== false)){
+                if(!self::validateEmail($email)){
                     $errores[] = 'email';
                 }
                 if(empty($telefono) || is_nan($telefono)){

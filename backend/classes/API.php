@@ -150,10 +150,17 @@ class API {
                 }
                 $result = Category::suggestCategory($id_budget);
                 break;
+                case 'validateemail':
+                    $email = isset($url_params[1]) ? $url_params[1] : null;
+                    $result = Usuario ::validateEmail($email);
+                    if (!$result) {
+                        $errores[] = 'email';
+                    }
+                break;
             }
         }
         if (!empty($errores)) {
-            $error = "The request wasn't finished properly because of the lack of the following parameters: " . implode(', ', $errores);
+            $error = "The request wasn't finished properly because of the invalidity or lack of the following parameters: " . implode(', ', $errores);
         }
         else {
             $error = null;
