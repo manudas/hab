@@ -5,8 +5,23 @@ import { Field, reduxForm } from 'redux-form';
 import { withCookies, Cookies } from 'react-cookie';
 
 class SolicitarPresupuesto extends Component {
+
+	steps = 
+		[
+			{current_step: 'location_step', next_step: 'estimated-date-step'},
+			{current_step: 'estimated-date-step', previous_step: 'location_step', next_step: 'description-step'},
+			{current_step: 'description-step', previous_step: 'estimated-date-step', next_step: 'contact_details'},
+			{current_step: 'contact_details', previous_step: 'description-step'}
+		];
+
+
 	constructor(props) {
-        super(props);
+        	super(props);
+			this.continuePressed = false;
+	}
+
+	componentDidMount() {
+		this.current_step = (this.props.fields.step != undefined) ? this.props.fields.step : 'location_step';
 	}
 	
 	/**
@@ -17,6 +32,8 @@ class SolicitarPresupuesto extends Component {
 	 */
 	onFormSubmit(event) {
 		event.preventDefault();
+		this.continuePressed = true;
+		this.moveForward(event);
 	}
 
 	/**
@@ -26,7 +43,7 @@ class SolicitarPresupuesto extends Component {
 		return (
 			<div id="ql-quotation-request" className="col-lg-7 col-md-7 col-12">
 				<div id="ql-form-container" className="form-40pct form-rick-40pct  header-container">
-					<form onSubmit={this.onFormSubmit} action="//localhost/nuevo?source_page=quotation-showList#" method="post" id="ql-form" className="step-1 max-1 lang-es bg-light border" data-trackid="ProcesoSolicitud">
+					<form onSubmit={this.onFormSubmit.bind(this)} action="//localhost/nuevo?source_page=quotation-showList#" method="post" id="ql-form" className="step-1 max-1 lang-es bg-light border" data-trackid="ProcesoSolicitud">
 						<i className="icon icon-spinner icon-spin hidden"></i>
 						<a name="form"></a>
 						<header className="quotation-form-header clearfix ">
@@ -46,167 +63,62 @@ class SolicitarPresupuesto extends Component {
 									</div>
 								</div>
 							</div>
-							<div className="step col-12" data-step-name="location" style={{ display: 'block' }}>
+							<div id="location_step" className="step col-12" data-step-name="location_step" style={{ display: this.current_step == 'location_step' ? 'block' : 'none' }}>
 								<input name="step_fields" id="step_fields" value="location_id,zip" type="hidden" />
 								<div className="fields">
-									<label className="title-label mb-5" for="zip">¿Dónde quieres realizar el trabajo?</label>
+									<label className="title-label mb-5" htmlFor="direccion">¿Dónde quieres realizar el trabajo?</label>
 									<Field 
 										name="direccion"
 										onChange={this.saveCookieValue.bind(this)}
-										component={this.renderZipField}
+										component={this.renderTextField.bind(this)}
+										required={true}
+										label="Código postal o dirección"
+										className = "formField" 
 									/>		
 								</div>
 							</div>
 							<div className="step col-12" data-step-name="categories" style={{ display: 'none' }}>
 								<input name="step_fields" id="step_fields" value="category_id" type="hidden" />
 								<div className="fields">
-									<div className="form-field form-group responsive_select" data-original-title="" title="">
-										<label className="title-label" for="subcategory" id="category_id">¿A qué categoría corresponde el trabajo?:</label>
-										<div className="input-container">
-											<select id="subcategory" name="subcategory" className="form-control">
-												<option value="">Selecciona una categoría</option>
-												<optgroup label="Construcción">
-													<option value="002-22">Construcción Casas</option>
-													<option value="002-145">Construcción Casas Prefabricadas</option>
-													<option value="002-148">Construcción Garajes</option>
-													<option value="002-149">Construcción Instalaciones Deportivas</option>
-													<option value="002-151">Construcción Muros</option>
-													<option value="002-152">Construcción Naves Industriales</option>
-													<option value="002-50">Construcción Piscinas</option>
-													<option value="002-154">Derribos</option>
-													<option value="002-155">Excavaciones</option>
-												</optgroup>
-												<optgroup label="Reforma">
-													<option value="002-12">Reformas Baños</option>
-													<option value="002-11">Reformas Cocinas</option>
-													<option value="002-13">Reformas Comunidades</option>
-													<option value="002-17">Reformas Locales Comerciales</option>
-													<option value="002-20">Reformas Naves Industriales</option>
-													<option value="002-18">Reformas Oficinas</option>
-													<option value="002-157">Reformas Piscinas</option>
-													<option value="002-10">Reformas Viviendas</option>
-													<option value="002-21">Rehabilitación edificios</option>
-													<option value="002-14">Rehabilitación Fachadas</option>
-												</optgroup>
-												<optgroup label="Mudanzas">
-													<option value="002-140">Guardamuebles</option>
-													<option value="002-136">Mudanzas Oficinas</option>
-													<option value="002-134">Mudanzas Viviendas</option>
-												</optgroup>
-												<optgroup label="Técnicos">
-													<option value="002-1">Arquitectos</option>
-													<option value="002-2">Arquitectos Técnicos</option>
-													<option value="002-181">Certificaciones Energéticas</option>
-													<option value="002-57">Decoradores</option>
-													<option value="002-3">Delineantes</option>
-													<option value="002-8">Geólogos</option>
-													<option value="002-58">Ingenieros</option>
-													<option value="002-161">Inspección Técnica Edificios ITE</option>
-													<option value="002-160">Licencias</option>
-													<option value="002-56">Paisajistas</option>
-													<option value="002-7">Peritos</option>
-													<option value="002-55">Topógrafos</option>
-												</optgroup>
-												<optgroup label="Obras Menores">
-													<option value="002-44">Aislamiento</option>
-													<option value="002-28">Albañiles</option>
-													<option value="002-124">Armarios</option>
-													<option value="002-36">Carpintería Aluminio</option>
-													<option value="002-37">Carpintería Metálica</option>
-													<option value="002-116">Carpintería PVC</option>
-													<option value="002-35">Carpinteros</option>
-													<option value="002-40">Cerrajeros</option>
-													<option value="002-39">Cristaleros</option>
-													<option value="002-30">Fontaneros</option>
-													<option value="002-177">Hormigón Impreso</option>
-													<option value="002-15">Impermeabilizaciones</option>
-													<option value="002-45">Insonorización</option>
-													<option value="002-43">Marmolistas</option>
-													<option value="002-175">Microcemento</option>
-													<option value="002-41">Parquetistas</option>
-													<option value="002-176">Pavimentos Continuos</option>
-													<option value="002-33">Pintores</option>
-													<option value="002-68">Pladur</option>
-													<option value="002-121">Poceros</option>
-													<option value="002-123">Tapiceros</option>
-													<option value="002-118">Tejados</option>
-													<option value="002-122">Trabajos Verticales</option>
-													<option value="002-34">Yeseros</option>
-												</optgroup>
-												<optgroup label="Instaladores">
-													<option value="002-66">Aire Acondicionado</option>
-													<option value="002-46">Alarmas</option>
-													<option value="002-47">Antenas</option>
-													<option value="002-54">Ascensores</option>
-													<option value="002-65">Calefacción</option>
-													<option value="002-83">Chimeneas</option>
-													<option value="002-64">Contra Incendios</option>
-													<option value="002-53">Domótica</option>
-													<option value="002-32">Electricistas</option>
-													<option value="002-31">Gas</option>
-													<option value="002-114">Placas Solares</option>
-													<option value="002-119">Porteros Automáticos</option>
-													<option value="002-120">Puertas Garaje</option>
-													<option value="002-51">Rótulos</option>
-													<option value="002-62">Toldos</option>
-												</optgroup>
-												<optgroup label="Mantenimiento">
-													<option value="002-82">Control Plagas</option>
-													<option value="002-81">Fosas Sépticas</option>
-													<option value="002-9">Jardineros</option>
-													<option value="002-77">Limpieza</option>
-													<option value="002-141">Manitas</option>
-													<option value="002-128">Mantenimiento Ascensores</option>
-													<option value="002-164">Mantenimiento Comunidades</option>
-													<option value="002-129">Mantenimiento Piscinas</option>
-													<option value="002-178">Pulir Suelos</option>
-												</optgroup>
-												<optgroup label="Tiendas">
-													<option value="002-180">Alquiler Maquinaria y Herramientas</option>
-													<option value="002-96">Electrodomésticos</option>
-													<option value="002-126">Materiales Construcción</option>
-													<option value="002-95">Muebles</option>
-												</optgroup>
-											</select>
-										</div>
-									</div>
-									<div id="subsubcategory-container" className="form-field form-group hidden">
-										<label for="work_type" id="subcategory">Tipo de trabajo:</label>
-										<div>
-											<div className="radios checkbox-group">
-											</div>
-										</div>
-									</div>
+
+									<Field 
+										name="categoria"
+										onChange={this.saveCookieValue.bind(this)}
+										component={this.renderTextField.bind(this)}
+										required={false}
+										label="Categoría"
+										className="formField"
+									/>
+
+									
+									
 								</div>
 							</div>
-							<div id="dynamic-questions-container"></div>
-							<div id="ondemand-questions-container"></div>
-							<div id="static-questions-container"></div>
-							<div id="estimated-date-step" className="step col-12" data-step-name="date" style={{ display: 'none' }}>
+							<div id="estimated-date-step" className="step col-12" data-step-name="estimated-date-step" style={{ display: this.current_step == 'estimated-date-step' ? 'block' : 'none' }}>
 								<input name="step_fields" id="step_fields" value="estimated_date" type="hidden" />
 								<div className="fields">
 									<div className="form-field form-group responsive_select" id="p_estimated_date" data-original-title="" title="">
-										<label className="title-label" for="estimated_date">¿Cuándo quieres realizar el trabajo?</label>
+										<label className="title-label" htmlFor="estimated_date">¿Cuándo quieres realizar el trabajo?</label>
 										<div className="input-container">
 											<div className="radios checkbox-group" id="estimated_date" name="estimated_date" />
 											<div className="col-lg-12">
 												<input name="estimated_date" value="ASAP" id="estimated_date_ASAP" type="radio" />
-												<label className="button-label" for="estimated_date_ASAP">
+												<label className="button-label" htmlFor="estimated_date_ASAP">
 													Lo antes posible</label>
 											</div>
 											<div className="col-lg-12">
 												<input name="estimated_date" value="LESS_3M" id="estimated_date_LESS_3M" type="radio" />
-												<label className="button-label" for="estimated_date_LESS_3M">
+												<label className="button-label" htmlFor="estimated_date_LESS_3M">
 													De 1 a 3 meses</label>
 											</div>
 											<div className="col-lg-12">
 												<input name="estimated_date" value="MORE_3M" id="estimated_date_MORE_3M" type="radio" />
-												<label className="button-label" for="estimated_date_MORE_3M">
+												<label className="button-label" htmlFor="estimated_date_MORE_3M">
 													Más de 3 meses</label>
 											</div>
 											<div className="col-lg-12">
 												<input name="estimated_date" value="NO_PLANNED" id="estimated_date_NO_PLANNED" type="radio" />
-												<label className="button-label" for="estimated_date_NO_PLANNED">
+												<label className="button-label" htmlFor="estimated_date_NO_PLANNED">
 													De momento no tengo pensado hacerlo</label>
 											</div>
 										</div>
@@ -214,11 +126,11 @@ class SolicitarPresupuesto extends Component {
 								</div>
 							</div>
 						</div>
-						<div id="description-step" className="step col-12" data-step-name="description" style={{ display: 'none' }}>
+						<div id="description-step" className="step col-12" data-step-name="description-step" style={{ display: this.current_step == 'description-step' ? 'block' : 'none' }}>
 							<div className="fields">
 								<input name="step_fields" id="step_fields" value="description" type="hidden" />
 								<div className="form-field form-group">
-									<label className="title-label" for="description">Cuéntanos más detalles sobre el trabajo, si quieres</label>
+									<label className="title-label" htmlFor="description">Cuéntanos más detalles sobre el trabajo, si quieres</label>
 									<div className="input-container">
 										<textarea rows="6" cols="30" name="description" className="form-control" id="description" placeholder="Si lo deseas, puedes dar más detalles del trabajo que necesitas para que los profesionales sean más precisos a la hora de pasarte presupuesto. No incluyas ningún dato de contacto."></textarea>
 									</div>
@@ -246,55 +158,32 @@ class SolicitarPresupuesto extends Component {
 								</div>
 							</div>
 						</div>
-						<div className="step col-12 info-step" data-step-name="contact_details" style={{ display: 'none' }}>
+						<div id="contact_details" className="step col-12 info-step" data-step-name="contact_details" style={{ display: this.current_step == 'contact_details' ? 'block' : 'none' }}>
 							<input name="step_fields" id="step_fields" value="contact_name,contact_mail,contact_phone,phone_provider,phone_type,referrer,newsletter_subscribe,contact_phone_secondary" type="hidden" />
 							<div className="fields info-fields">
-								<label className="title-label" for="zip">Tus datos de contacto</label>
+								<label className="title-label" htmlFor="zip">Tus datos de contacto</label>
 								<div className="form-field form-group p_name">
-									<label className="" for="contact_name">Tu nombre</label>
+									<label className="" htmlFor="contact_name">Tu nombre</label>
 									<div className="">
-										<input id="contact_name" className="full-width fb-input-name form-control" name="name" value="" autocomplete="nope" type="text" />
+										<input id="contact_name" className="full-width fb-input-name form-control" name="name" value="" autoComplete="nope" type="text" />
 									</div>
 								</div>
 								<div className="form-field form-group p_email" data-original-title="" title="">
-									<label className="" for="email">E-mail</label>
+									<label className="" htmlFor="email">E-mail</label>
 									<div className="">
-										<input id="contact_mail" className="full-width fb-input-email form-control" name="email" value="" autocomplete="nope" type="text" />
+										<input id="contact_mail" className="full-width fb-input-email form-control" name="email" value="" autoComplete="nope" type="text" />
 									</div>
 								</div>
 								<div className="form-field form-group p_phone_1" data-original-title="" title="">
-									<label className="" for="phone">Teléfono</label>
+									<label className="" htmlFor="phone">Teléfono</label>
 									<div id="contact-phone-container">
-										<input id="contact_phone" name="phone" className="full-width form-control" value="" autocomplete="nope" type="text" />
+										<input id="contact_phone" name="phone" className="full-width form-control" value="" autoComplete="nope" type="text" />
 									</div>
 								</div>
 								<p id="quality-advise" className="m-text hidden">
 									Los profesionales pagan una cuota por acceder a tu solicitud. Por favor, asegúrate de que la información facilitada es correcta.
 						</p>
-								<div className="form-field form-group referrer hidden" data-original-title="" title="">
-									<label className="" for="referrer">¿Cómo nos has conocido?</label>
-									<div className="">
-										<select id="referrer" name="referrer" className="form-control">
-											<option value="">Seleccionar</option>
-											<option value="0">Conocido</option>
-											<option value="1">Otro sitio web</option>
-											<option value="2">Google</option>
-											<option value="3">Buzoneo</option>
-											<option value="4">Internet</option>
-											<option value="5">Brico Dépôt</option>
-											<option value="6">Email</option>
-											<option value="7">Facebook</option>
-											<option value="8">Radio</option>
-											<option value="9">TV</option>
-											<option value="10">Youtube</option>
-											<option value="11">Periódico</option>
-											<option value="12">Revista</option>
-											<option value="13">Transporte público</option>
-											<option value="14">Valla publicitaria</option>
-											<option value="15">Otro</option>
-										</select>
-									</div>
-								</div>
+								
 								<div className="row">
 									<div className="col-12 terms-column">
 										<div className="form-field form-group p_terms">
@@ -341,24 +230,25 @@ class SolicitarPresupuesto extends Component {
 	}
 
 	/**
-	 * Renders the ZIP / Address field
+	 * Generic method to render a fields
 	 * @param {*} field 
 	 */
-	renderZipField(field) {
-		let emptyZip = 
-			(<div class="error-container">
-				<span class="control-label form_error" id="zip_error">Debes rellenar este campo con un número</span>
+	renderTextField(field) {
+		let empty = 
+			(<div className="error-container">
+				<span className="control-label form_error" id={field.input.name+"_error"}>Debes rellenar este campo</span>
 			</div>);
 		return (
 			<div className="form-field form-group p_zip  ">
-				<label id="zip-label" for="direccion">Código postal o dirección</label>
-				{field.meta.touched && 
-					(!field.input.value || isNaN(field.input.value)) ? emptyZip : ''}
+				<label id="zip-label" htmlFor="direccion">{field.label}</label>
+				{field.required && (field.meta.touched || this.continuePressed) && 
+					!field.input.value ? empty : ''}
 				
 				<div className="row">
 					<div className="col-sm-6 col-12 one-line-height">
-					<input id="zip" size="6" className="form-control" autocomplete="nope" type="text" 
+					<input id={field.input.name} size="6" className={"form-control "+field.className} autoComplete="nope" type="text" 
 						{...field.input}
+						data-valid={field.required && !field.input.value ? false : true}
 					/>&nbsp;	
 					</div>
 				</div>
@@ -373,6 +263,43 @@ class SolicitarPresupuesto extends Component {
 		let value = event.target.value;
 		let name = event.target.name;
 		this.props.cookies.set(name, value, { path: '/' });
+	}
+
+	moveForward(event) {
+		let current_step = this.current_step;
+		for (let i = 0; i < this.steps.length; i++) {
+			var step_obj = this.steps[i];
+			if (step_obj.current_step == current_step) {
+				break;
+			}
+		}
+		this.continuePressed = true;
+		let next_step = step_obj.next_step;
+		let previous_step = step_obj.previous_step;
+
+		let container = document.getElementById(current_step);
+
+		let fields = container.getElementsByClassName("formField");
+		let validationPassed = true;
+		for (let i = 0; i < fields.length; i ++) {
+			let element = fields[i];
+			var valid = element.getAttribute('data-valid');
+			if (!valid) {
+				validationPassed = false;
+				break;
+			}
+		}
+
+		if (validationPassed) {
+			if (typeof next_step !== 'undefined'){
+				this.step = next_step;
+				this.props.cookies.set('step', next_step, { path: '/' });
+			}
+			else {
+				// send to the server, no more steps
+			}
+		}
+
 	}
 }
 
@@ -389,7 +316,11 @@ function validate(values) {
 	return errores;
 }
 
-export default reduxForm({
+const mapStateToProps = state => ({
+  fields: state.fields
+});
+
+export default connect(mapStateToProps)(reduxForm({
 	validate: validate,
 	form: 'budgetForm'
-})(withCookies(SolicitarPresupuesto));
+})(withCookies(SolicitarPresupuesto)));

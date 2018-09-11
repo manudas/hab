@@ -41,7 +41,7 @@ class Presupuesto extends Component {
 			</div>
 		);
 	}
-	componentDidMount() {
+	componentWillMount() {
 		this.props.restore_data();
 	}
 }
