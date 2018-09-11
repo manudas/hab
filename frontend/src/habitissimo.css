@@ -302,3 +302,51 @@ label {
 [data-icon]:before {
     content: attr(data-icon)
 }
+
+element.style {
+    display: inline;
+}
+
+#ql-form-container.form-rick-40pct form .form-submit .form-step a {
+    color: #2b2d2e;
+}
+
+#ql-form-container .ql-submit-area .ql-back, .btn-link, .btn-link:active, .btn-link:focus, .btn-link:hover {
+    border-color: transparent;
+}
+
+#ql-form-container .ql-submit-area .ql-back, .btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+    background-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+#ql-form-container .ql-submit-area .ql-back, .btn-link {
+    color: #ff7300;
+    font-weight: 400;
+    border-radius: 0;
+}
+a {
+    color: #ff7300;
+    text-decoration: none;
+}
+
+@media screen and (min-width: 767px) {
+    #ql-form-container.form-rick-40pct form .form-submit .form-step {
+        left:50px;
+        top: 35px;
+        position: absolute
+    }
+}
+
+#ql-form-container.form-rick-40pct form .form-submit .form-step {
+    font-size: 16px;
+    letter-spacing: -.21px;
+}
+
+#ql-form-container.form-rick-40pct form .form-submit {
+    text-align: center;
+    padding: 20px 50px;
+    position: relative;
+    min-height: 90px;
+}

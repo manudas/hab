@@ -8,7 +8,8 @@ class SolicitarPresupuesto extends Component {
 
 	steps = 
 		[
-			{current_step: 'location_step', next_step: 'estimated-date-step'},
+			{current_step: 'location_step', next_step: 'categories_step'},
+			{current_step: 'categories_step', previous_step: 'location_step', next_step: 'estimated-date-step'},
 			{current_step: 'estimated-date-step', previous_step: 'location_step', next_step: 'description-step'},
 			{current_step: 'description-step', previous_step: 'estimated-date-step', next_step: 'contact_details'},
 			{current_step: 'contact_details', previous_step: 'description-step'}
@@ -74,10 +75,11 @@ class SolicitarPresupuesto extends Component {
 										required={true}
 										label="Código postal o dirección"
 										className = "formField" 
+										value={this.props.fields.direccion}
 									/>		
 								</div>
 							</div>
-							<div className="step col-12" data-step-name="categories" style={{ display: 'none' }}>
+							<div id="categories_step" className="step col-12" data-step-name="categories_step" style={{ display: this.current_step == 'categories_step' ? 'block' : 'none' }}>
 								<input name="step_fields" id="step_fields" value="category_id" type="hidden" />
 								<div className="fields">
 
@@ -88,9 +90,8 @@ class SolicitarPresupuesto extends Component {
 										required={false}
 										label="Categoría"
 										className="formField"
+										value={this.props.fields.categoria}
 									/>
-
-									
 									
 								</div>
 							</div>
@@ -212,7 +213,7 @@ class SolicitarPresupuesto extends Component {
 							<input name="is-ondemand" value="0" id="is-ondemand" type="hidden" />
 							<input name="source_page" value="quotation-showList" id="source_page" type="hidden" />
 							<small className="form-step">
-								<a href="javascript:void(0)" id="previous-step" className="back btn-link" style={{ display: 'none' }}>« Volver</a>
+								<a href="javascript:void(0)" onClick={this.moveBack.bind(this)} id="previous-step" className="back btn-link" style={{ display: this.hasPreviousStep() ? 'block' : 'none' }}>« Volver</a>
 							</small>
 							<button className="btn btn-primary btn-lg next ql-submit" id="next-step">Continuar »</button>
 							<button className="btn btn-primary btn-lg next ql-submit" id="submit-quotation" style={{ display: 'none' }}>Solicitar presupuestos</button>
@@ -265,6 +266,26 @@ class SolicitarPresupuesto extends Component {
 		this.props.cookies.set(name, value, { path: '/' });
 	}
 
+	/**
+	 * Check if the currents state has a previous step
+	 */
+	hasPreviousStep() {
+		let current_step = this.current_step;
+		for (let i = 0; i < this.steps.length; i++) {
+			var step_obj = this.steps[i];
+			if (step_obj.current_step == current_step) {
+				break;
+			}
+		}
+		let previous_step = step_obj.previous_step;
+		return (typeof previous_step !== 'undefined');
+	}
+
+	/**
+	 * Moves forward in the current
+	 * budget step
+	 * @param {*} event 
+	 */
 	moveForward(event) {
 		let current_step = this.current_step;
 		for (let i = 0; i < this.steps.length; i++) {
@@ -275,7 +296,7 @@ class SolicitarPresupuesto extends Component {
 		}
 		this.continuePressed = true;
 		let next_step = step_obj.next_step;
-		let previous_step = step_obj.previous_step;
+		// let previous_step = step_obj.previous_step;
 
 		let container = document.getElementById(current_step);
 
@@ -289,17 +310,35 @@ class SolicitarPresupuesto extends Component {
 				break;
 			}
 		}
-
 		if (validationPassed) {
 			if (typeof next_step !== 'undefined'){
-				this.step = next_step;
+				this.current_step = next_step;
 				this.props.cookies.set('step', next_step, { path: '/' });
 			}
 			else {
 				// send to the server, no more steps
 			}
 		}
+	}
 
+	/**
+	 * Moves to a previous step in 
+	 * the current budget state
+	 * @param {*} event 
+	 */
+	moveBack(event) {
+		let current_step = this.current_step;
+		for (let i = 0; i < this.steps.length; i++) {
+			var step_obj = this.steps[i];
+			if (step_obj.current_step == current_step) {
+				break;
+			}
+		}
+		let previous_step = step_obj.previous_step;
+		if (typeof previous_step !== 'undefined') {
+			this.props.cookies.set('step', previous_step, { path: '/' });
+			this.current_step = previous_step;
+		}
 	}
 }
 
