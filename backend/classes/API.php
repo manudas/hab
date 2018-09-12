@@ -16,7 +16,7 @@ class API {
      * object which depends on it
      */
     public static function initDB() {
-        self::$DB = new DB();
+        self::$DB = new DB(null, 'root', '77346829z', 'habitissimo');
 
         Budget::initDB(self::$DB);
         Category::initDB(self::$DB);
@@ -59,12 +59,12 @@ class API {
                         'error' => 'Budget must contain title and category. The following field(s) is(are) not present: ' . implode(', ', $errores)
                     );
                 }
-                
+
             }
         }
         // error_log(json_encode($post_params));
         $presupuesto = new Budget($post_params);
-        
+
         $done = $presupuesto -> guardar();
         return array(
             'correcto' => $done != false
@@ -84,7 +84,7 @@ class API {
             );
         }
 
-        $old_budget = new Budget(array(id => $put_params['id']));
+        $old_budget = new Budget(array('id' => $put_params['id']));
 
         // non pending budget check
         if ($old_budget.estado.getValue() != new Estado(Estado::Pendiente)) {
@@ -105,7 +105,7 @@ class API {
                  * "Published"
                  */
                 if (
-                    !((!empty($old_budget -> titulo) || !empty($put_params['titulo']))
+                !((!empty($old_budget -> titulo) || !empty($put_params['titulo']))
                     && (!empty($old_budget -> categoria) || !empty($put_params['categoria'])))
                 ) {
                     $errores = array();
@@ -139,7 +139,7 @@ class API {
         }
 
         $presupuesto = new Budget($put_params);
-        
+
         $done = $presupuesto -> guardar();
         return array(
             'correcto' => $done != false
@@ -161,22 +161,22 @@ class API {
                     $page = isset($get_params['page']) ? $get_params['page'] : 0;
                     $limit = isset($get_params['limit']) ? $get_params['limit'] : 10;
                     $result = Budget.getList($user, $page, $limit);
-                break;
-                case 'suggestCategory':
-                $id_budget = isset($url_params[1]) ? $url_params[1] : null;
-                if (empty($id_budget)) {
-                    $errores[] = 'id_budget';
                     break;
-                }
-                $result = Category::suggestCategory($id_budget);
-                break;
+                case 'suggestCategory':
+                    $id_budget = isset($url_params[1]) ? $url_params[1] : null;
+                    if (empty($id_budget)) {
+                        $errores[] = 'id_budget';
+                        break;
+                    }
+                    $result = Category::suggestCategory($id_budget);
+                    break;
                 case 'validateemail':
                     $email = isset($url_params[1]) ? $url_params[1] : null;
                     $result = Usuario ::validateEmail($email);
                     if (!$result) {
                         $errores[] = 'email';
                     }
-                break;
+                    break;
             }
         }
         if (!empty($errores)) {

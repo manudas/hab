@@ -1,20 +1,21 @@
 <?php
 
 class DB {
-    
+
     private $password = '';
     private $user = '';
     private $host = '';
     private $database = '';
+    public $insert_id = null;
 
     /**
      * Builds up the object
      */
-    function __constructor($host = 'localhost', $user = '', $password = '', $database = 'test') {
-        $this -> host = $host;
-        $this -> user = $user;
-        $this -> password = $password;
-        $this -> database = $database;
+    public function __construct($host = null, $user = null, $password = null, $database = null) {
+        $this -> host = !empty($host) ? $host : 'localhost';
+        $this -> user = !empty($user) ? $user : '';
+        $this -> password = !empty($password) ? $password : '';
+        $this -> database = !empty($database) ? $database : 'test';
         
         $this -> initConnection();
     }
@@ -23,9 +24,9 @@ class DB {
      * Inits DB mysqli connection / driver
      */
     private function initConnection() {
-        $mysqli = new mysqli($this -> host, $this -> user, $this -> password, $this -> database);
-        if ($mysqli->connect_errno) {
-            echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
+        $this -> mysqli = new mysqli($this -> host, $this -> user, $this -> password, $this -> database);
+        if ($this -> mysqli -> connect_errno) {
+            echo "Failed to connect to MySQL: (" . $this -> mysqli -> connect_errno . ") " . $this -> mysqli -> connect_error;
         }
     }
 
@@ -62,7 +63,9 @@ class DB {
     public function query($SQL) { 
         // necesario satinizar o asegurar los campos
         // por seguridad. La mejor opcion: parametized queries
-        $res = $mysqli->query($SQL);
+        $res = $this -> mysqli -> query($SQL);
+        // If it is an insert, it will save the last insert id
+        $this -> insert_id = $this -> mysqli -> insert_id;
         return $res;
     }
 

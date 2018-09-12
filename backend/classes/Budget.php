@@ -21,12 +21,12 @@ class Budget {
             throw new RuntimeException('Please init DB before using this class');
         }
 
-        $SQL = 
+        $SQL =
             "SELECT * from budget as b
              JOIN usuario as u
                 ON b.usuario = u.email";
         $SQL .= !empty($user) ? " WHERE u.email = $user" : "";
-        $SQL .= ' LIMIT ' . ($page*$limit) . ', ' . $limit; 
+        $SQL .= ' LIMIT ' . ($page*$limit) . ', ' . $limit;
 
         return self::$db -> queryArrayAssoc($SQL);
     }
@@ -35,7 +35,7 @@ class Budget {
      * either a new object or to get a db stored object by its id
      */
     public function __construct($params){
-         error_log(json_encode($params));
+        // error_log(json_encode($params));
         if (self::$db == null) {
             throw new RuntimeException('Please init DB before using this class');
         }
@@ -47,11 +47,11 @@ class Budget {
             extract($new_params);
         }
         else {
-            $errores = array();                                            
-            if (empty($descripcion) 
-                    || empty($email) || (strpos($email, 'hotmail') !== false) 
-                    || empty($telefono) || is_nan(intval($telefono))
-                    || empty($nombre)) {
+            $errores = array();
+            if (empty($descripcion)
+                || empty($email) || (strpos($email, 'hotmail') !== false)
+                || empty($telefono) || is_nan(intval($telefono))
+                || empty($nombre)) {
 
                 if(empty($descripcion)){
                     $errores[] = 'descripcion';
@@ -74,19 +74,26 @@ class Budget {
             $error_log = "Error, la validación de presupuesto ha fallado en los siguientes campos: ". implode(', ', $errores);
             throw new RuntimeException($error_log);
         }
-        
+
         $this -> titulo = isset($titulo) ? $titulo : null; // not compulsory
         $this -> descripcion = $descripcion;
         // $this -> estado = $estado;
 
         $estado = empty($estado) ? new Estado(Estado::Pendiente) : $estado;
-        
+
         $this -> estado = $estado;
         if (count($params) == 1) {
-            $this -> usuario = new Usuario($email);
+            $this -> usuario = new Usuario(array('email' => $email));
         }
         else if (!empty($email)){ // if we don't want to edit the user we may leave $email empty
-            $this -> usuario = new Usuario($email, $direccion, $telefono, $nombre);
+            $this -> usuario = new Usuario(
+                array(
+                    'email' => $email,
+                    'direccion' => $direccion,
+                    'telefono' => $telefono,
+                    'nombre' => $nombre
+                )
+            );
         }
         $this -> categoria = isset($categoria) ? $categoria : null; // not compulsory
     }
@@ -97,14 +104,14 @@ class Budget {
     private function load_array_from_DB($id_budget) {
         $SQL = "SELECT * FROM budget WHERE id = $id_budget";
         return self::$db -> queryFirstAssocResult($SQL);
-    } 
+    }
 
     /**
      * Saves or updates the object in DB
      */
     public function guardar(){
         if ($this -> id == null) {
-            $SQL = 
+            $SQL =
                 "INSERT INTO budget (titulo, descripcion, estado, usuario, categoria) 
                     VALUES('{$this -> titulo}', '{$this -> descripcion}', {$this -> estado -> getValue()}, '{$this -> usuario -> email}', '{$this -> categoria}') ";
         }
@@ -120,21 +127,21 @@ class Budget {
             }
             if (!empty($this -> descripcion)) {
                 $SQL .= "descripcion='{$this -> descripcion}',";
-            }        
+            }
             if (!empty($this -> estado)) {
                 $SQL .= "estado={$this -> estado},";
             }
             if (!empty($this -> categoria)) {
                 $SQL .= "categoria={$this -> categoria},";
-            } 
+            }
             if (!empty($this -> usuario -> email)) { // no me convence permitir cambiar email
                 $SQL .= "usuario='{$this -> usuario -> email}'";
             }
             $SQL = trim($SQL);
             if (substr($SQL, -1) == ',') { // if the last character of the string is a comma, we remove it
-                $SQL = substr($string, 0, -1);
+                $SQL = substr($SQL, 0, -1);
             }
-            $SQL .= 
+            $SQL .=
                 " WHERE id = '{$this -> id }'";
         }
         $resultado = self::$db -> query($SQL);

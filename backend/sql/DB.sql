@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `habitissimo` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `habitissimo`;
 -- MySQL dump 10.13  Distrib 5.7.23, for Linux (x86_64)
 --
 -- Host: localhost    Database: habitissimo
@@ -25,7 +23,7 @@ DROP TABLE IF EXISTS `budget`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `budget` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `titulo` varchar(256) DEFAULT NULL,
   `descripcion` varchar(256) NOT NULL,
   `estado` int(11) NOT NULL,
@@ -80,7 +78,7 @@ DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE `usuario` (
   `email` varchar(64) NOT NULL,
   `direccion` varchar(256) NOT NULL,
-  `telefono` int(11) NOT NULL,
+  `telefono` varchar(32) NOT NULL,
   `nombre` varchar(64) NOT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -104,4 +102,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-09 23:28:21
+-- Dump completed on 2018-09-12 22:13:10

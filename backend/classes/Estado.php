@@ -2,7 +2,7 @@
 
 class Estado {
     const __default = self::Pendiente;
-    
+
     const Pendiente = 1;
     const Publicada = 2;
     const Descartada = 3;
@@ -14,7 +14,7 @@ class Estado {
      *
      * @throws UnexpectedValueException if incompatible type is given.
      */
-    public function __constructor($value){
+    public function __construct($value){
         if (!$this->isValid($value)) {
             throw new UnexpectedValueException("Value '$value' is not part of the enum " . get_called_class());
         }

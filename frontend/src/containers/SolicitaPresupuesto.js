@@ -291,19 +291,19 @@ class SolicitarPresupuesto extends Component {
 		let validation_error = "La validacion de este campo ha fallado";
 		let error = 
 			(<div className="error-container">
-				<span className="control-label form_error" id={field.input.name+"_error"}>{ async_invalid_data ? validation_error : empty_error}</span>
+				<span className="control-label form_error" id={field.input.name+"_error"}>{ async_invalid_data || (field.meta.invalid && field.input.value) ? validation_error : empty_error}</span>
 			</div>);
 		return (
 			<div className={"form-field form-group p_"+field.input.name}>
 				<label id={field.input.name+"-label"} htmlFor={field.input.name}>{field.label}</label>
 				{((field.required && (field.meta.touched || this.continuePressed) && 
-					!field.input.value) || async_invalid_data) ? error : ''}
+					!field.input.value) || async_invalid_data || (field.meta.invalid && field.input.value)) ? error : ''}
 				
 				<div className="row">
 					<div className="col-sm-6 col-12 one-line-height">
 					<input id={field.input.name} size="6" className={"form-control "+field.className} autoComplete="nope" type="text" 
 						{...field.input}
-						data-valid={((field.required && !field.input.value) || async_invalid_data) ? false : true}
+						data-valid={((field.required && !field.input.value) || async_invalid_data) || (field.meta.invalid && field.input.value) ? false : true}
 					/>&nbsp;	
 					</div>
 				</div>
@@ -489,11 +489,12 @@ class SolicitarPresupuesto extends Component {
 			.then((response) => response.json())
 				.then((data) => { 
 					// Your code for handling the data you get from the API
-					if (data.correcto === false) {
+					if (data.correcto === true) {
 						alert("Se insertó el presupuesto correctamente");
 					}
 					else {		
-						alert("El presupuesto no ha sido insertado. Error: " + data.error );
+						let error = data.error ? "Error:\n" + data.error : ''
+						alert("El presupuesto no ha sido insertado. " + error);
 					}
 
 				})
@@ -501,20 +502,6 @@ class SolicitarPresupuesto extends Component {
 					// This is where you run code if the server returns any errors
 					console.error(`An error has ocurred calling api url ${_API_save_url}\n: ${error}`);
 				});
-/*
-
-		fetch(url, {
-			method: 'POST', // or 'PUT'
-			body: JSON.stringify(data), // data can be `string` or {object}!
-			headers:{
-			  'Content-Type': 'application/json'
-			}
-		  }).then(res => res.json())
-		  .catch(error => console.error('Error:', error))
-		  .then(response => console.log('Success:', response));
-*/
-
-
 	}
 }
 
@@ -524,12 +511,26 @@ class SolicitarPresupuesto extends Component {
  * @param {*} values 
  */
 function validate(values) {
+	// No es necesaria esta funcion pues no enviamos el formulario
+	// como tal, si no lo que lo hacemos a través de ajax con fetch
 	var errores = {};
 	if (!values.direccion) {
 		errores.direccion = "Error codigo postal / dirección";
 	}
 	if (!values.categoria || !values.subcategoria) {
 		errores.direccion = "Error en categoría o subcategoría";
+	}
+	if (!values.telefono || isNaN(values.telefono)) {
+		errores.telefono = "Error en telefono";
+	}
+	if (!values.nombre) {
+		errores.nombre = "Error en nombre";
+	}
+	if (!values.email || values.email.includes('hotmail')) {
+		errores.email = "Error en email";
+	}
+	if (!values.descripcion ) {
+		errores.descripcion = "Error en descripcion";
 	}
 
 	return errores;

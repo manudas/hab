@@ -23,20 +23,26 @@ if ('PUT' === $method) {
 }
 
 API::initDB();
-
-switch ($method) {
-  case 'PUT':
-    $result = API::put($url_params, $_PUT);  
-    break;
-  case 'POST':
-    $result = API::post($url_params, $_POST);  
-    break;
-  case 'GET':
-    $result = API::get($url_params, $_GET);  
-    break;
-  default:
-    $result = API::handle_error($url_params);  
-    break;
+try {
+    switch ($method) {
+        case 'PUT':
+            $result = API::put($url_params, $_PUT);
+            break;
+        case 'POST':
+            $result = API::post($url_params, $_POST);
+            break;
+        case 'GET':
+            $result = API::get($url_params, $_GET);
+            break;
+        default:
+            $result = API::handle_error($url_params);
+            break;
+    }
 }
-
+catch (Exception $e) {
+    $result = array(
+        'correcto' => false,
+        'error' => $e -> getMessage()
+    );
+}
 echo json_encode($result);

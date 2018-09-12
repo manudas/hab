@@ -104,7 +104,7 @@ class Category {
         if (empty($category_percentage_array)) {
             return true;
         }
-        foreach ($categories as $category) {
+        foreach ($category_percentage_array as $category) {
             $current_coincidence = $category['coincidence'];
             if ($current_coincidence < $comparable_percentage) {
                 return true;

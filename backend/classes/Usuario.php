@@ -21,7 +21,7 @@ class Usuario {
      * In case it receives only an argument, it treats it
      * as an id and tries to retrieve such object from DB
      */
-    public function __constructor($params){
+    public function __construct($params){
        // $email, $direccion, $telefono, $nombre) {
     
         if (self::$db == null) {
@@ -31,7 +31,7 @@ class Usuario {
         extract($params);
         if (count($params) == 1 && !empty($email)) {
             // constructor was provided with the id of the object to retrieve from DB
-            $new_params = $this -> load_array_from_DB($id);
+            $new_params = $this -> load_array_from_DB($email);
             extract($new_params);
         }
         else {
@@ -65,7 +65,10 @@ class Usuario {
         $this -> nombre = $nombre;
 
         if (count($params) != 1) {
-            $this -> guardar();
+            $ok = $this -> guardar();
+            if (!$ok) {
+                throw new RuntimeException("Error desconocido al guardar Usuario en BD");
+            }
         }
     }
 
@@ -89,7 +92,7 @@ class Usuario {
                     direccion='{$this -> direccion}',
                     telefono={$this -> telefono}";
 
-        self::$db -> query($SQL);
+        return self::$db -> query($SQL);
     }
 
 }
