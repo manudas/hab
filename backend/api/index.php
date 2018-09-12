@@ -4,6 +4,7 @@ $http_origin = $_SERVER['HTTP_ORIGIN'];
 if (strpos($http_origin, 'localhost') !== false)
 {  
     header("Access-Control-Allow-Origin: $http_origin");
+    // error_log ("Access-Control-Allow-Origin: $http_origin");
 }
 
 header("Content-type: application/json; charset=utf-8");
@@ -20,6 +21,8 @@ $_PUT = null;
 if ('PUT' === $method) {
     parse_str(file_get_contents('php://input'), $_PUT);
 }
+
+API::initDB();
 
 switch ($method) {
   case 'PUT':

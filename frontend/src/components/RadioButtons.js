@@ -3,27 +3,29 @@ import PropTypes from 'prop-types';
 
 import { Field } from 'redux-form';
 
-const RadioButtons = (props) => (
-    <Field
-        component={(field) => ({input, options}) =>  (
-            options.map(option => 
-                <div key={option.id} className={input.className}>
-                {/* className="col-lg-12" */}
-                    <input
-                        className={option.className ? option.className : ''}
-                        id={option.id}
-                        type='radio'
-                        {...input}
-                        value={option.value}
-                        checked={option.value === input.value}
-                    />
-                    <label htmlFor={option.id}>{option.label}</label>
-                </div>
-            )
-        )}
-        {...props}
-    />
-);
+const RadioButtons = (props) => {
+    return (
+        <Field
+            component={(field) => (
+                field.options.map(option => 
+                    <div key={option.id} className={field.className}>
+                    {/* className="col-lg-12" */}
+                        <input
+                            className={option.className ? option.className : ''}
+                            id={option.id}
+                            type='radio'
+                            {...field.input}
+                            value={option.value}
+                            checked={option.value === field.input.value}
+                        />
+                        <label htmlFor={option.id}>{option.label}</label>
+                    </div>
+                )
+            )}
+            {...props}
+        />
+    );
+};
 
 
 /*

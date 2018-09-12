@@ -74,5 +74,4 @@ class Estado {
     public function getValue() {
         return (int) $this -> value;
     }
-
 }

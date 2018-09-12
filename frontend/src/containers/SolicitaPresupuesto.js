@@ -172,7 +172,7 @@ class SolicitarPresupuesto extends Component {
 									className="formField"
 									rows="6"
 									cols="30"
-									name="description" 
+									name="descripcion" 
 									placeholder="Danos más detalles del trabajo que necesitas para que los profesionales sean más precisos a la hora de pasarte presupuesto. No incluyas ningún dato de contacto."
 									onChange={this.saveCookieValue.bind(this)}
 									label="Cuéntanos más detalles sobre el trabajo"
@@ -452,27 +452,39 @@ class SolicitarPresupuesto extends Component {
 		let _API_save_url = '//' + window.location.hostname + '/api/index.php/';
 
 		let fields = document.getElementsByClassName("formField");
-		let data = {};
+		let data = new FormData();
 		for (let i = 0; i < fields.length; i ++) {
 			let element = fields[i];
 			let name = element.getAttribute('name');
-			let value = element.getAttribute('value');
+			if (element.tagName.toLocaleLowerCase() === 'textarea') {
+				var value = element.innerHTML;
+			}
+			else { // input...
+				var value = element.getAttribute('value');
+			}
 			let type = element.getAttribute('type');
-			let checked = element.getAttribute('checked');
 			if (type === 'radio') {
-				if (checked && checked !== 'false') {
-					data[name] = value;
+				if (element.checked) {
+					data.append(name, value);
 				}
 			}
 			else {
-				data[name] = value;
+				data.append(name, value);
 			}
 		}
+		// testing mode for PHP / xDebug
+		// data.append ('XDEBUG_SESSION', 'phpstorm');
 
 		fetch(_API_save_url, // Call the fetch function passing the url of the API as a parameter
 			{
 				method: 'POST',
 				body: data, // data can be object or string (JSon string)
+				
+				headers: {
+					'Accept': 'application/json',
+                	// 'Content-Type': 'application/json'
+				},
+				
 			}) 
 			.then((response) => response.json())
 				.then((data) => { 

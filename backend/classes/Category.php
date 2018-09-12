@@ -9,7 +9,7 @@ class Category {
     /**
      * Initialize DB, compulsory to construct the object
      */
-    public static function initDB($db) {
+    public static function initDB(&$db) {
         self::$db = $db;
     }
 

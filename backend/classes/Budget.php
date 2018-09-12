@@ -11,7 +11,7 @@ class Budget {
     /**
      * Initialize DB, compulsory to construct the object
      */
-    public static function initDB($db) {
+    public static function initDB(&$db) {
         self::$db = $db;
     }
 
@@ -28,14 +28,14 @@ class Budget {
         $SQL .= !empty($user) ? " WHERE u.email = $user" : "";
         $SQL .= ' LIMIT ' . ($page*$limit) . ', ' . $limit; 
 
-        return self::$db -> query($SQL);
+        return self::$db -> queryArrayAssoc($SQL);
     }
 
     /* we pass an array with parameters, as we need to construct
      * either a new object or to get a db stored object by its id
      */
     public function __construct($params){
-
+         error_log(json_encode($params));
         if (self::$db == null) {
             throw new RuntimeException('Please init DB before using this class');
         }
@@ -49,17 +49,17 @@ class Budget {
         else {
             $errores = array();                                            
             if (empty($descripcion) 
-                    || empty($usuario_email) || (strpos($usuario_email, 'hotmail') !== false) 
-                    || empty($telefono) || NAN($telefono) 
+                    || empty($email) || (strpos($email, 'hotmail') !== false) 
+                    || empty($telefono) || is_nan(intval($telefono))
                     || empty($nombre)) {
 
                 if(empty($descripcion)){
-                    $errores[] = 'description';
+                    $errores[] = 'descripcion';
                 }
-                if(empty($usuario_email) || (strpos($usuario_email, 'hotmail') !== false)){
+                if(empty($email) || (strpos($email, 'hotmail') !== false)){
                     $errores[] = 'email';
                 }
-                if(empty($telefono) || NAN($telefono)){
+                if(empty($telefono) || is_nan(intval($telefono))){
                     $errores[] = 'telefono';
                 }
                 if(empty($nombre)){
@@ -79,31 +79,34 @@ class Budget {
         $this -> descripcion = $descripcion;
         // $this -> estado = $estado;
 
-        $estado == null ? new Estado(Estado::Pendiente) : $estado;
+        $estado = empty($estado) ? new Estado(Estado::Pendiente) : $estado;
         
         $this -> estado = $estado;
         if (count($params) == 1) {
-            $this -> usuario = new Usuario($usuario_email);
+            $this -> usuario = new Usuario($email);
         }
-        else if (!empty($usuario_email)){ // if we don't want to edit the user we may leave $usuario_email empty
-            $this -> usuario = new Usuario($usuario_email, $direccion, $telefono, $nombre);
+        else if (!empty($email)){ // if we don't want to edit the user we may leave $email empty
+            $this -> usuario = new Usuario($email, $direccion, $telefono, $nombre);
         }
         $this -> categoria = isset($categoria) ? $categoria : null; // not compulsory
     }
 
+    /**
+     * Auxiliar function to get the properties from DB
+     */
     private function load_array_from_DB($id_budget) {
         $SQL = "SELECT * FROM budget WHERE id = $id_budget";
-        return self::$db -> query($SQL);
+        return self::$db -> queryFirstAssocResult($SQL);
     } 
 
     /**
      * Saves or updates the object in DB
      */
-    private function guardar(){
+    public function guardar(){
         if ($this -> id == null) {
             $SQL = 
                 "INSERT INTO budget (titulo, descripcion, estado, usuario, categoria) 
-                    VALUES('{$this -> titulo}', '{$this -> descripcion}', {$this -> estado}, '{$this -> usuario -> email}', '{$this -> categoria}') ";
+                    VALUES('{$this -> titulo}', '{$this -> descripcion}', {$this -> estado -> getValue()}, '{$this -> usuario -> email}', '{$this -> categoria}') ";
         }
         else {
             $SQL = "

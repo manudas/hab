@@ -5,10 +5,30 @@ require_once 'Usuario.php';
 require_once 'Budget.php';
 require_once 'Estado.php';
 
+require_once 'DB.php';
+
 class API {
+
+    private static $DB = null;
+
+    /**
+     * Inits DB and associate it to all
+     * object which depends on it
+     */
+    public static function initDB() {
+        self::$DB = new DB();
+
+        Budget::initDB(self::$DB);
+        Category::initDB(self::$DB);
+        Usuario::initDB(self::$DB);
+    }
+
+    /**
+     * Handles the invalid verb request
+     */
     public static function handle_error(){
         return array(
-            error => 'No valid HTTP verb used'
+            'error' => 'No valid HTTP verb used'
         );
     }
 
@@ -42,7 +62,7 @@ class API {
                 
             }
         }
-
+        // error_log(json_encode($post_params));
         $presupuesto = new Budget($post_params);
         
         $done = $presupuesto -> guardar();
