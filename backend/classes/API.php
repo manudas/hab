@@ -35,8 +35,8 @@ class API {
                         $errores[] = 'categoria';
                     }
                     return array(
-                        correcto => false,
-                        error => 'Budget must contain title and category. The following field(s) is(are) not present: ' . implode(', ', $errores)
+                        'correcto' => false,
+                        'error' => 'Budget must contain title and category. The following field(s) is(are) not present: ' . implode(', ', $errores)
                     );
                 }
                 
@@ -47,7 +47,7 @@ class API {
         
         $done = $presupuesto -> guardar();
         return array(
-            correcto => $done != false
+            'correcto' => $done != false
         );
     }
 
@@ -59,8 +59,8 @@ class API {
         // id check
         if (empty($put_params['id'])){
             return array(
-                correcto => false,
-                error => 'No budged id provided, use post verb to insert a new budget instead'
+                'correcto' => false,
+                'error' => 'No budged id provided, use post verb to insert a new budget instead'
             );
         }
 
@@ -69,8 +69,8 @@ class API {
         // non pending budget check
         if ($old_budget.estado.getValue() != new Estado(Estado::Pendiente)) {
             return array(
-                correcto => false,
-                error => 'Budget is not pending, you are not allowed to modify a non pending budget'
+                'correcto' => false,
+                'error' => 'Budget is not pending, you are not allowed to modify a non pending budget'
             );
         }
 
@@ -96,8 +96,8 @@ class API {
                         $errores[] = 'categoria';
                     }
                     return array(
-                        correcto => false,
-                        error => 'Budget must contain title and category. The following field(s) is(are) not present: ' . implode(', ', $errores)
+                        'correcto' => false,
+                        'error' => 'Budget must contain title and category. The following field(s) is(are) not present: ' . implode(', ', $errores)
                     );
                 }
             }
@@ -112,8 +112,8 @@ class API {
                  * The budget was already discarded
                  */
                 return array(
-                    correcto => false,
-                    error => 'Budget was already discarded. Please request a new budget intead'
+                    'correcto' => false,
+                    'error' => 'Budget was already discarded. Please request a new budget intead'
                 );
             }
         }
@@ -122,7 +122,7 @@ class API {
         
         $done = $presupuesto -> guardar();
         return array(
-            correcto => $done != false
+            'correcto' => $done != false
         );
     }
 
@@ -166,9 +166,9 @@ class API {
             $error = null;
         }
         return array(
-            correcto => !empty($result),
-            datos => $result,
-            error => $error
+            'correcto' => !empty($result),
+            'datos' => $result,
+            'error' => $error
         );
     }
 }

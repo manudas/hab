@@ -21,8 +21,9 @@ class SolicitarPresupuesto extends Component {
 	constructor(props) {
         	super(props);
 			this.continuePressed = false;
-			this.renderText = this.renderTextField.bind(this);
+			this.renderText = this.renderTextField.bind(this,'');
 			this.renderTextArea = this.renderTextAreaField.bind(this);
+			this.renderTextEmail = this.renderTextField.bind(this, 'email');
 	}
 
 	componentWillUpdate() {
@@ -86,7 +87,6 @@ class SolicitarPresupuesto extends Component {
 								<div className="fields">
 									<label className="title-label mb-5" htmlFor="direccion">¿Dónde quieres realizar el trabajo?</label>
 									<Field 
-										key="direccion"
 										name="direccion"
 										onChange={this.saveCookieValue.bind(this)}
 										component={this.renderText}
@@ -104,7 +104,6 @@ class SolicitarPresupuesto extends Component {
 										name="categoria"
 										onChange={this.saveCookieValue.bind(this)}
 										component={this.renderText}
-										required={false}
 										label="Categoría"
 										className="formField"
 										required={true}
@@ -114,7 +113,6 @@ class SolicitarPresupuesto extends Component {
 										name="subcategoria"
 										onChange={this.saveCookieValue.bind(this)}
 										component={this.renderText}
-										required={false}
 										label="Subcategoría. Por favor sea más específico (no integrado en Back)"
 										className="formField"
 										required={true}
@@ -131,6 +129,7 @@ class SolicitarPresupuesto extends Component {
 											<div className="radios checkbox-group" id="estimated_date" name="estimated_date" />
 
 											<RadioButtons
+												className="col-lg-12"
 												onChange={this.saveCookieValue.bind(this)}
 												name="estimated_date"
 												options={[
@@ -138,25 +137,25 @@ class SolicitarPresupuesto extends Component {
 														id: 'estimated_date_ASAP',
 														label: 'Lo antes posible',
 														value: 'ASAP',
-														className: "formField col-lg-12"
+														className: "formField "
 													},
 													{
 														id: 'estimated_date_LESS_3M',
 														label: 'De 1 a 3 meses',
 														value: 'LESS_3M',
-														className: "formField col-lg-12"
+														className: "formField "
 													},
 													{
 														id: 'estimated_date_MORE_3M',
 														label: 'Más de 3 meses',
 														value: 'MORE_3M',
-														className: "formField col-lg-12"
+														className: "formField "
 													},
 													{
 														id: 'estimated_date_NO_PLANNED',
 														label: 'De momento no tengo pensado hacerlo',
 														value: 'NO_PLANNED',
-														className: "formField col-lg-12"
+														className: "formField "
 													}
 												]}
 											/>
@@ -199,10 +198,12 @@ class SolicitarPresupuesto extends Component {
 								<Field 
 									key="email"
 									name="email"
+									ref="email"
 									onChange={this.saveCookieValue.bind(this)}
-									component={this.renderText}
+									onBlur={this.validateEmail.bind(this)}
+									component={this.renderTextEmail}
 									required={true}
-									label="E-mail. enviar ajax para checkear y poner data-valid a false"
+									label="E-mail"
 									className = "formField full-width fb-input-name"
 								/>
 								<Field 
@@ -282,22 +283,27 @@ class SolicitarPresupuesto extends Component {
 	 * Generic method to render a fields for SolicitarPresupuesto.js
 	 * @param {*} field 
 	 */
-	renderTextField(field) {
-		let empty = 
+	renderTextField(reference, field) {
+		if (reference && this.refs[reference]) {
+			var async_invalid_data = this.refs[reference].validationError;
+		}
+		let empty_error = "Debes rellenar este campo";
+		let validation_error = "La validacion de este campo ha fallado";
+		let error = 
 			(<div className="error-container">
-				<span className="control-label form_error" id={field.input.name+"_error"}>Debes rellenar este campo</span>
+				<span className="control-label form_error" id={field.input.name+"_error"}>{ async_invalid_data ? validation_error : empty_error}</span>
 			</div>);
 		return (
 			<div className={"form-field form-group p_"+field.input.name}>
 				<label id={field.input.name+"-label"} htmlFor={field.input.name}>{field.label}</label>
-				{field.required && (field.meta.touched || this.continuePressed) && 
-					!field.input.value ? empty : ''}
+				{((field.required && (field.meta.touched || this.continuePressed) && 
+					!field.input.value) || async_invalid_data) ? error : ''}
 				
 				<div className="row">
 					<div className="col-sm-6 col-12 one-line-height">
 					<input id={field.input.name} size="6" className={"form-control "+field.className} autoComplete="nope" type="text" 
 						{...field.input}
-						data-valid={field.required && !field.input.value ? false : true}
+						data-valid={((field.required && !field.input.value) || async_invalid_data) ? false : true}
 					/>&nbsp;	
 					</div>
 				</div>
@@ -378,6 +384,7 @@ class SolicitarPresupuesto extends Component {
 			}
 			else {
 				// send to the server, no more steps
+				this.saveBudget(event);
 			}
 		}
 		else {
@@ -403,6 +410,99 @@ class SolicitarPresupuesto extends Component {
 			this.props.cookies.set('step', previous_step, { path: '/' });
 			this.props.fields.step = previous_step;
 		}
+	}
+	
+	/**
+	 * Launches an ajax request and
+	 * sets a promise to validate the
+	 * field
+	 * @param {*} event 
+	 */
+	validateEmail(event) {
+
+		let emailField = this.refs["email"];
+		let email = event.target.value;
+		let email_url = '//' + window.location.hostname + '/api/index.php/validateemail/' + email;
+
+		fetch(email_url) // Call the fetch function passing the url of the API as a parameter
+			.then((response) => response.json())
+				.then((data) => { 
+					// Your code for handling the data you get from the API
+					if (data.correcto === false) {
+						emailField.validationError = true;
+						this.forceUpdate();
+					}
+					else {		
+						if (emailField.validationError == true) {
+							emailField.validationError = false;
+							this.forceUpdate();
+						}
+						// 
+					}
+					// alert(event);
+				})
+				.catch((error) => {
+					// This is where you run code if the server returns any errors
+					console.error(`An error has ocurred calling api url ${email_url}\n: ${error}`);
+				});
+	}
+
+	saveBudget(event) {
+
+		let _API_save_url = '//' + window.location.hostname + '/api/index.php/';
+
+		let fields = document.getElementsByClassName("formField");
+		let data = {};
+		for (let i = 0; i < fields.length; i ++) {
+			let element = fields[i];
+			let name = element.getAttribute('name');
+			let value = element.getAttribute('value');
+			let type = element.getAttribute('type');
+			let checked = element.getAttribute('checked');
+			if (type === 'radio') {
+				if (checked && checked !== 'false') {
+					data[name] = value;
+				}
+			}
+			else {
+				data[name] = value;
+			}
+		}
+
+		fetch(_API_save_url, // Call the fetch function passing the url of the API as a parameter
+			{
+				method: 'POST',
+				body: data, // data can be object or string (JSon string)
+			}) 
+			.then((response) => response.json())
+				.then((data) => { 
+					// Your code for handling the data you get from the API
+					if (data.correcto === false) {
+						alert("Se insertó el presupuesto correctamente");
+					}
+					else {		
+						alert("El presupuesto no ha sido insertado. Error: " + data.error );
+					}
+
+				})
+				.catch((error) => {
+					// This is where you run code if the server returns any errors
+					console.error(`An error has ocurred calling api url ${_API_save_url}\n: ${error}`);
+				});
+/*
+
+		fetch(url, {
+			method: 'POST', // or 'PUT'
+			body: JSON.stringify(data), // data can be `string` or {object}!
+			headers:{
+			  'Content-Type': 'application/json'
+			}
+		  }).then(res => res.json())
+		  .catch(error => console.error('Error:', error))
+		  .then(response => console.log('Success:', response));
+*/
+
+
 	}
 }
 
