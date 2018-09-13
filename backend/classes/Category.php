@@ -1,6 +1,7 @@
 <?php
 
 require_once 'Budget.php';
+require_once 'BD.php';
 
 class Category {
     private static $db = null;

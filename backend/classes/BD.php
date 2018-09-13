@@ -1,6 +1,6 @@
 <?php
 
-class DB {
+class BD {
 
     private $password = '';
     private $user = '';
@@ -8,6 +8,7 @@ class DB {
     private $database = '';
     public $insert_id = null;
 
+    private $mysqli = null; 
     /**
      * Builds up the object
      */

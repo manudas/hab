@@ -1,4 +1,7 @@
 <?php
+
+require_once 'BD.php';
+
 class Usuario {
     private static $db = null;
 

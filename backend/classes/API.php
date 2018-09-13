@@ -5,7 +5,7 @@ require_once 'Usuario.php';
 require_once 'Budget.php';
 require_once 'Estado.php';
 
-require_once 'DB.php';
+require_once 'BD.php';
 
 class API {
 
@@ -16,7 +16,7 @@ class API {
      * object which depends on it
      */
     public static function initDB() {
-        self::$DB = new DB(null, 'root', '77346829z', 'habitissimo');
+        self::$DB = new BD(null, 'root', '77346829z', 'habitissimo');
 
         Budget::initDB(self::$DB);
         Category::initDB(self::$DB);

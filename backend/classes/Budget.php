@@ -2,6 +2,7 @@
 
 require_once 'Estado.php';
 require_once 'Usuario.php';
+require_once 'BD.php';
 
 class Budget {
 
