@@ -46,6 +46,10 @@ class Presupuesto extends Component {
 	}
 }
 
+/**
+ * Connects our action creators with out
+ * redux / component ecosystem
+ */
 function mapDistpatchToProps(dispatch) {
 	return bindActionCreators({
 		restore_data: restore_data

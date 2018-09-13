@@ -31,14 +31,9 @@ class SolicitarPresupuesto extends Component {
 			this.continuePressed = false;
 		}
 	}
-	/*
-	componentDidUpdate() {
-		this.continuePressed = false;
-	}
-*/
+
 	componentDidMount() {
 		this.props.fields.step = (this.props.fields.step != undefined) ? this.props.fields.step : 'location_step';
-		// this.props.fields.step = 'location_step';
 	}
 	
 	/**
@@ -291,7 +286,7 @@ class SolicitarPresupuesto extends Component {
 		let validation_error = "La validacion de este campo ha fallado";
 		let error = 
 			(<div className="error-container">
-				<span className="control-label form_error" id={field.input.name+"_error"}>{ async_invalid_data || (field.meta.invalid && field.input.value) ? validation_error : empty_error}</span>
+				<span className="control-label form_error" id={field.input.name+"_error"}>{ field.required && !field.input.value ? empty_error : validation_error }</span>
 			</div>);
 		return (
 			<div className={"form-field form-group p_"+field.input.name}>
@@ -320,6 +315,11 @@ class SolicitarPresupuesto extends Component {
 		this.props.cookies.set(name, value, { path: '/' });
 	}
 
+	/**
+	 * Calculates in which percentage of
+	 * the form we are at the moment, to
+	 * print the progress bar properly
+	 */
 	calculateStepPercentage() {
 		let current_step = this.props.fields.step;
 		for (var i = 0; i < this.steps.length; i++) {
@@ -447,8 +447,12 @@ class SolicitarPresupuesto extends Component {
 				});
 	}
 
+	/**
+	 * Sends the save request to the api,
+	 * so as to save this form
+	 * @param {*} event 
+	 */
 	saveBudget(event) {
-
 		let _API_save_url = '//' + window.location.hostname + '/api/index.php/';
 
 		let fields = document.getElementsByClassName("formField");
@@ -474,7 +478,6 @@ class SolicitarPresupuesto extends Component {
 		}
 		// testing mode for PHP / xDebug
 		// data.append ('XDEBUG_SESSION', 'phpstorm');
-
 		fetch(_API_save_url, // Call the fetch function passing the url of the API as a parameter
 			{
 				method: 'POST',
@@ -484,7 +487,6 @@ class SolicitarPresupuesto extends Component {
 					'Accept': 'application/json',
                 	// 'Content-Type': 'application/json'
 				},
-				
 			}) 
 			.then((response) => response.json())
 				.then((data) => { 
@@ -496,7 +498,6 @@ class SolicitarPresupuesto extends Component {
 						let error = data.error ? "Error:\n" + data.error : ''
 						alert("El presupuesto no ha sido insertado. " + error);
 					}
-
 				})
 				.catch((error) => {
 					// This is where you run code if the server returns any errors
@@ -514,12 +515,19 @@ function validate(values) {
 	// No es necesaria esta funcion pues no enviamos el formulario
 	// como tal, si no lo que lo hacemos a través de ajax con fetch
 	var errores = {};
+	
 	if (!values.direccion) {
 		errores.direccion = "Error codigo postal / dirección";
 	}
-	if (!values.categoria || !values.subcategoria) {
-		errores.direccion = "Error en categoría o subcategoría";
+	
+	if (!values.categoria) {
+		errores.categoria = "Error en categoría o subcategoría";
 	}
+
+	if (!values.subcategoria) {
+		errores.subcategoria = "Error en categoría o subcategoría";
+	}
+
 	if (!values.telefono || isNaN(values.telefono)) {
 		errores.telefono = "Error en telefono";
 	}
@@ -536,6 +544,12 @@ function validate(values) {
 	return errores;
 }
 
+/**
+ * Associates the desired state fields,
+ * usually all those related with this
+ * component, whith the props of it
+ * @param {*} state 
+ */
 const mapStateToProps = state => {
 	var decodedInitialValues = {};
 	for (var key in state.fields) {
@@ -548,6 +562,12 @@ const mapStateToProps = state => {
 	return obj;
 };
 
+/**
+ * Connects our state,
+ * our redux form and
+ * our cookie provider
+ * with out component
+ */
 export default connect(mapStateToProps)(reduxForm({
 	validate: validate,
 	form: 'budgetForm'

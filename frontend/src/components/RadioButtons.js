@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 
 import { Field } from 'redux-form';
 
+/**
+ * Custom component to create the radio buttons
+ * of our SolicitarPresupuesto component
+ * @param {*} props 
+ */
 const RadioButtons = (props) => {
     return (
         <Field
@@ -27,34 +32,11 @@ const RadioButtons = (props) => {
     );
 };
 
-
-/*
-
-const RadioButtons = (props) => (
-    <Field
-        component= {renderRadioButtons.bind(this, {input, options})}
-        {...props}
-    />
-);
-
-const renderRadioButtons = (field, input, options) => {
-    options.map(option => 
-        <div key={option.id} className={input.className}>
-        
-        <input
-        className={option.className ? option.className : ''}
-        id={option.id}
-        type='radio'
-        {...input}
-        value={option.value}
-        checked={option.value === input.value}
-    />
-    <label htmlFor={option.id}>{option.label}</label>
-</div>
-)
-}
-
-*/
+/**
+ * Ensures the proper stucture of
+ * the props that will be passed
+ * to our custom component
+ */
 RadioButtons.propTypes = {
     options: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,

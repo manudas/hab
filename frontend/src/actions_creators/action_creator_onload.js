@@ -1,5 +1,10 @@
 export const action_restore_data = 'action_restore_data';
 
+/**
+ * Action creator used to restore the
+ * data which provide the previously
+ * saved cookie
+ */
 export function restore_data() {
     var cookie = document.cookie;
     var cookie_obj = cookie.split(/[;] */).reduce(function(result, pairStr) {
