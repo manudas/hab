@@ -76,7 +76,7 @@ class Usuario {
      * Auxiliar function to get the properties from DB
      */
     private function load_array_from_DB($email) {
-        $SQL = "SELECT * FROM usuario WHERE email = $email";
+        $SQL = "SELECT * FROM usuario WHERE email = '$email'";
         return self::$db -> queryFirstAssocResult($SQL);
     } 
 

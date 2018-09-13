@@ -39,9 +39,9 @@ class API {
 
         // published budget check
         if (!empty($post_params['estado'])) {
-            $new_state = new Estado($post_params['estado']);
+            $new_state = new Estado(intval($post_params['estado']));
             $published_state = new Estado(Estado::Publicada);
-            if($new_state.getValue() == $published_state.getValue()) {
+            if($new_state -> getValue() == $published_state -> getValue()) {
                 /* If we have to insert a new published budget, it must
                  * contain a title and a category. Otherwise the budget
                  * will only be allowed to be inserted if it's not published
@@ -86,8 +86,25 @@ class API {
 
         $old_budget = new Budget(array('id' => $put_params['id']));
 
+        // discarded budget check
+        if (!empty($put_params['estado'])) {
+            $new_state = new Estado(intval($put_params['estado']));
+            $discarded_state = new Estado(Estado::Descartada);
+            if ($new_state -> getValue() == $discarded_state -> getValue()) {
+                if ($old_budget -> estado ->getValue() == $discarded_state -> getValue()) {
+                    /*
+                     * The budget was already discarded
+                     */
+                    return array(
+                        'correcto' => false,
+                        'error' => 'Budget was already discarded. You can not discard a discarded budget'
+                    );
+                }
+            }
+        }
+
         // non pending budget check
-        if ($old_budget.estado.getValue() != new Estado(Estado::Pendiente)) {
+        if ($old_budget -> estado -> getValue() != new Estado(Estado::Pendiente)) {
             return array(
                 'correcto' => false,
                 'error' => 'Budget is not pending, you are not allowed to modify a non pending budget'
@@ -96,9 +113,9 @@ class API {
 
         // published budget check
         if (!empty($put_params['estado'])) {
-            $new_state = new Estado($put_params['estado']);
+            $new_state = new Estado(intval($put_params['estado']));
             $published_state = new Estado(Estado::Publicada);
-            if($new_state.getValue() == $published_state.getValue()) {
+            if($new_state -> getValue() == $published_state -> getValue()) {
                 /* We check if the old value for category / title was empty
                  * and in such case, that the new value passed is not empty.
                  * Only if we have a value for both, we allow to update to
@@ -120,21 +137,6 @@ class API {
                         'error' => 'Budget must contain title and category. The following field(s) is(are) not present: ' . implode(', ', $errores)
                     );
                 }
-            }
-        }
-
-        // discarded budget check
-        if (!empty($put_params['estado'])) {
-            $new_state = new Estado($put_params['estado']);
-            $discarded_state = new Estado(Estado::Descartada);
-            if ($new_state.getValue() == $discarded_state.getValue()) {
-                /*
-                 * The budget was already discarded
-                 */
-                return array(
-                    'correcto' => false,
-                    'error' => 'Budget was already discarded. Please request a new budget intead'
-                );
             }
         }
 
@@ -160,7 +162,7 @@ class API {
                     $user = isset($url_params[1]) ? $url_params[1] : null;
                     $page = isset($get_params['page']) ? $get_params['page'] : 0;
                     $limit = isset($get_params['limit']) ? $get_params['limit'] : 10;
-                    $result = Budget.getList($user, $page, $limit);
+                    $result = Budget::getList($user, $page, $limit);
                     break;
                 case 'suggestCategory':
                     $id_budget = isset($url_params[1]) ? $url_params[1] : null;

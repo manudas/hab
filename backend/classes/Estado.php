@@ -7,6 +7,8 @@ class Estado {
     const Publicada = 2;
     const Descartada = 3;
 
+    private static $cache = array();
+    
     /**
      * Creates a new enum value
      *
@@ -15,10 +17,10 @@ class Estado {
      * @throws UnexpectedValueException if incompatible type is given.
      */
     public function __construct($value){
-        if (!$this->isValid($value)) {
+        if ( !$this -> isValid($value) ) {
             throw new UnexpectedValueException("Value '$value' is not part of the enum " . get_called_class());
         }
-        $this->value = $value;
+        $this -> value = $value;
     }
 
     /**
@@ -43,7 +45,7 @@ class Estado {
         $class = get_called_class();
         if (!isset(static::$cache[$class])) {
             $reflection            = new ReflectionClass($class);
-            static::$cache[$class] = $reflection->getConstants();
+            static::$cache[$class] = $reflection -> getConstants();
         }
         return static::$cache[$class];
     }

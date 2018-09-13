@@ -25,7 +25,7 @@ class Budget {
             "SELECT * from budget as b
              JOIN usuario as u
                 ON b.usuario = u.email";
-        $SQL .= !empty($user) ? " WHERE u.email = $user" : "";
+        $SQL .= !empty($user) ? " WHERE u.email = '$user'" : "";
         $SQL .= ' LIMIT ' . ($page*$limit) . ', ' . $limit;
 
         return self::$db -> queryArrayAssoc($SQL);
@@ -75,15 +75,19 @@ class Budget {
             throw new RuntimeException($error_log);
         }
 
+        if (!empty($id)) {
+            $this -> id = $id;
+        }
+
         $this -> titulo = isset($titulo) ? $titulo : null; // not compulsory
         $this -> descripcion = $descripcion;
         // $this -> estado = $estado;
 
-        $estado = empty($estado) ? new Estado(Estado::Pendiente) : $estado;
+        $estado = empty($estado) ? new Estado(Estado::Pendiente) : new Estado(intval($estado)) ;
 
         $this -> estado = $estado;
         if (count($params) == 1) {
-            $this -> usuario = new Usuario(array('email' => $email));
+            $this -> usuario = new Usuario(array('email' => $usuario));
         }
         else if (!empty($email)){ // if we don't want to edit the user we may leave $email empty
             $this -> usuario = new Usuario(
@@ -117,32 +121,38 @@ class Budget {
         }
         else {
             $SQL = "
-                UPDATE budget";
+                UPDATE budget SET ";
             /* What to update? Although some fields are mandatory, they may not be sent
              * if they are not needed to be updated, so we will check field by field
              * before inserting them in the SQL statement
              */
+            $fields = '';
             if (!empty($this -> titulo)) {
-                $SQL .= "titulo='{$this -> titulo}',";
+                $fields .= "titulo='{$this -> titulo}',";
             }
             if (!empty($this -> descripcion)) {
-                $SQL .= "descripcion='{$this -> descripcion}',";
+                $fields .= "descripcion='{$this -> descripcion}',";
             }
             if (!empty($this -> estado)) {
-                $SQL .= "estado={$this -> estado},";
+                $fields .= "estado={$this -> estado -> getValue()},";
             }
             if (!empty($this -> categoria)) {
-                $SQL .= "categoria={$this -> categoria},";
+                $fields .= "categoria={$this -> categoria},";
             }
             if (!empty($this -> usuario -> email)) { // no me convence permitir cambiar email
-                $SQL .= "usuario='{$this -> usuario -> email}'";
+                $fields .= "usuario='{$this -> usuario -> email}'";
             }
-            $SQL = trim($SQL);
-            if (substr($SQL, -1) == ',') { // if the last character of the string is a comma, we remove it
-                $SQL = substr($SQL, 0, -1);
+            $fields = trim($fields);
+            if (substr($fields, -1) == ',') { // if the last character of the string is a comma, we remove it
+                $fields = substr($fields, 0, -1);
             }
+
+            if (empty($fields)) {
+                return false;
+            }
+
             $SQL .=
-                " WHERE id = '{$this -> id }'";
+                "$fields WHERE id = '{$this -> id }'";
         }
         $resultado = self::$db -> query($SQL);
         if ($resultado != false && $this -> id == null){

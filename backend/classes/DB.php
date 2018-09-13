@@ -28,6 +28,7 @@ class DB {
         if ($this -> mysqli -> connect_errno) {
             echo "Failed to connect to MySQL: (" . $this -> mysqli -> connect_errno . ") " . $this -> mysqli -> connect_error;
         }
+        $this -> mysqli -> query("SET NAMES UTF8");
     }
 
     /**

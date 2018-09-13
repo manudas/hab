@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `habitissimo` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `habitissimo`;
 -- MySQL dump 10.13  Distrib 5.7.23, for Linux (x86_64)
 --
 -- Host: localhost    Database: habitissimo
@@ -102,4 +104,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-12 22:13:10
+-- Dump completed on 2018-09-13  2:21:22

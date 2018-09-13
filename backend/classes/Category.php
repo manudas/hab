@@ -23,7 +23,7 @@ class Category {
         }
         $SQL = 
             "SELECT * FROM category";
-        return self::$db -> query($SQL);    
+        return self::$db -> queryArrayAssoc($SQL);
     }
 
     /**
@@ -32,21 +32,18 @@ class Category {
      * passed as a parameter
      */
     public static function suggestCategory($id_budget) {
-        $budget = new Budget($id_budget);
+        $budget = new Budget(array('id' => $id_budget));
         $descripcion = $budget -> descripcion;
 
         $categories = self::getCategoryList();
 
-        $max_coincidence = 0;
-        $min_coincidence = 0;
-
         $suggested_categories = array();
 
         foreach($categories as $category) {
-            $name = $category['name'];
+            $name = $category['nombre'];
             $percentage1 = 0;
             $percentage2 = 0;
-            $final_percentage = 0;
+
             similar_text($descripcion, $name, $percentage1);
             similar_text($name, $descripcion, $percentage2);
             if ($percentage1 > $percentage2){
@@ -59,19 +56,20 @@ class Category {
             if ($is_greater == true && count($suggested_categories) >= self::$max_sugerences){
                 self::removeLesserPercentage($suggested_categories);
             }
-            if ($is_greater) {
+            if ($is_greater || (count($suggested_categories) < self::$max_sugerences)) {
                 $suggested_categories[] = array(
                                             category => $category,
                                             coincidence => $final_percentage
                 );
             }
         }
+        return $suggested_categories;
     }
 
     /**
      * Remove the category which coincidence is the lesser of all
      */
-    private static function removeLesserPercentage($category_arr) {
+    private static function removeLesserPercentage(&$category_arr) {
         $lesser_coincidence = 0;
         $lesser_category = null;
 
